@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>نیلوفر حقیقت | پیشنهادهای طراحی صفحهٔ خانه</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ---------- پایه ---------- */
+  :root {
+    --bg: #F6F6F3; --surface: #FFFFFF; --surface-2: #EFEFEA; --ink: #1C1D1F; --muted: #6B6E73;
+    --line: #E2E2DC; --accent: #2E5BDA; --accent-ink: #FFFFFF; --accent-soft: #E7EDFC;
+    --warn: #B7791F; --warn-soft: #FFF4E0;
+    --radius: 14px; --radius-sm: 10px;
+    --shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.06);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: "Vazirmatn", system-ui, sans-serif; background: var(--bg); color: var(--ink);
+    line-height: 1.9; font-size: 17px; -webkit-font-smoothing: antialiased;
+    transition: background .3s, color .3s;
+  }
+  a { color: inherit; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+  section { padding: 88px 0; }
+  h1, h2, h3 { line-height: 1.5; margin: 0; }
+  h2 { font-size: 30px; font-weight: 800; margin-bottom: 20px; }
+  p { margin: 0 0 12px; }
+
+  .btn { display: inline-flex; align-items: center; gap: 8px; border: 0; cursor: pointer; font: inherit;
+    font-weight: 700; font-size: 15px; padding: 11px 20px; border-radius: 999px; text-decoration: none;
+    background: var(--accent); color: var(--accent-ink); transition: transform .15s, opacity .15s; }
+  .btn:hover { transform: translateY(-1px); }
+  .btn.ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--line); }
+
+  /* ---------- سربرگ ---------- */
+  header.top { padding: 22px 0; }
+  header.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { font-weight: 800; font-size: 19px; }
+  .brand small { display: block; font-weight: 400; font-size: 12.5px; color: var(--muted); margin-top: -4px; }
+  nav.links { display: flex; gap: 24px; align-items: center; font-size: 15px; }
+  nav.links a { text-decoration: none; color: var(--muted); }
+  nav.links a:hover { color: var(--ink); }
+
+  /* ---------- تیتر اصلی: هشدار به‌روزرسانی ---------- */
+  .hero { padding: 56px 0 96px; }
+  .hero-kicker { font-size: 13px; color: var(--muted); letter-spacing: .3px; margin-bottom: 18px; }
+  .update { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow);
+    border: 1px solid var(--line); overflow: hidden; }
+  .update-bar { display: flex; align-items: center; gap: 8px; padding: 12px 18px; border-bottom: 1px solid var(--line);
+    font-size: 13px; color: var(--muted); background: var(--surface-2); }
+  .dots { display: flex; gap: 6px; margin-inline-start: auto; direction: ltr; }
+  .dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--line); display: block; }
+  .update-body { display: flex; gap: 20px; align-items: flex-start; padding: 36px 36px 32px; }
+  .update-icon { flex: none; width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center;
+    background: var(--warn-soft); color: var(--warn); font-size: 26px; font-weight: 800; }
+  .update h1 { font-size: clamp(26px, 4.2vw, 46px); font-weight: 800; }
+  .update h1 .l2 { display: block; color: var(--muted); font-weight: 500; }
+  .update h1 .l2 b { color: var(--ink); font-weight: 800; }
+  .update-actions { display: flex; gap: 12px; align-items: center; margin-top: 26px; flex-wrap: wrap; }
+  .update-meta { font-size: 13px; color: var(--muted); }
+
+  /* ---------- مسئله ---------- */
+  .problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+  .story p { font-size: 18px; }
+  .symptoms { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+  .symptoms li { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm);
+    padding: 16px 18px; display: flex; gap: 12px; align-items: flex-start; }
+  .symptoms li::before { content: "!"; flex: none; width: 24px; height: 24px; border-radius: 50%; display: grid;
+    place-items: center; font-size: 13px; font-weight: 800; background: var(--warn-soft); color: var(--warn); margin-top: 3px; }
+  .core { margin-top: 56px; font-size: clamp(22px, 3vw, 32px); font-weight: 800; text-align: center; line-height: 1.6; }
+  .core span { color: var(--accent); }
+
+  /* ---------- خدمات ---------- */
+  .lead { color: var(--muted); margin-bottom: 36px; }
+  .services { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; counter-reset: s; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px 24px;
+    display: flex; flex-direction: column; gap: 10px; position: relative; }
+  .card .num { font-size: 13px; font-weight: 700; color: var(--accent); background: var(--accent-soft);
+    width: fit-content; padding: 2px 12px; border-radius: 999px; }
+  .card h3 { font-size: 20px; font-weight: 800; }
+  .card .tag { font-weight: 500; }
+  .card .out { font-size: 15px; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 12px; margin-top: auto; }
+  .card .out b { color: var(--ink); display: block; font-size: 13px; margin-bottom: 4px; }
+  .card ul { margin: 0; padding-inline-start: 18px; }
+  .optional { margin-top: 18px; border: 1.5px dashed var(--line); border-radius: var(--radius); padding: 22px 24px;
+    display: grid; grid-template-columns: 1fr 2fr; gap: 24px; align-items: start; }
+  .optional h3 { font-size: 18px; }
+  .optional .badge { font-size: 12px; color: var(--muted); }
+  .optional ul { margin: 0; padding-inline-start: 18px; color: var(--muted); font-size: 15px; }
+  .center { text-align: center; margin-top: 36px; }
+
+  /* ---------- چرا من ---------- */
+  .why-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; margin-bottom: 36px; }
+  .stats { display: flex; gap: 32px; }
+  .stat b { display: block; font-size: 40px; font-weight: 800; line-height: 1.2; color: var(--accent); }
+  .stat span { font-size: 14px; color: var(--muted); }
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; position: relative; }
+  .steps::before { content: ""; position: absolute; top: 18px; right: 18px; left: 18px; height: 2px; background: var(--line); }
+  .step { position: relative; }
+  .step .dot { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-weight: 800;
+    background: var(--surface); border: 2px solid var(--accent); color: var(--accent); position: relative; z-index: 1; margin-bottom: 14px; }
+  .step:last-child .dot { background: var(--accent); color: var(--accent-ink); }
+  .step h3 { font-size: 17px; font-weight: 800; margin-bottom: 4px; }
+  .step p { font-size: 15px; color: var(--muted); }
+  .promise { margin-top: 40px; padding: 22px 26px; border-radius: var(--radius); background: var(--ink); color: var(--bg); font-weight: 700; }
+  .testimonials { margin-top: 18px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .placeholder { border: 1.5px dashed var(--line); border-radius: var(--radius-sm); padding: 22px; color: var(--muted);
+    font-size: 14px; text-align: center; }
+
+  /* ---------- دعوت: پنجرهٔ تأیید ---------- */
+  .cta { padding-bottom: 120px; }
+  .dialog { max-width: 560px; margin: 0 auto; background: var(--surface); border-radius: 20px; box-shadow: var(--shadow);
+    border: 1px solid var(--line); padding: 36px 36px 28px; text-align: center; }
+  .dialog .q { width: 56px; height: 56px; margin: 0 auto 18px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--accent-soft); color: var(--accent); font-size: 26px; font-weight: 800; }
+  .dialog h2 { font-size: 26px; margin-bottom: 12px; }
+  .dialog p { color: var(--muted); }
+  .dialog .actions { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; }
+  .dialog .actions .btn { justify-content: center; }
+  .contact { text-align: center; margin-top: 28px; font-size: 14px; color: var(--muted); }
+
+  footer { border-top: 1px solid var(--line); padding: 28px 0; font-size: 13px; color: var(--muted); }
+
+  /* =========================================================
+     جهت ۲: «دفتر» — گرم، نوشتاری، تایپوگرافی درشت
+     ========================================================= */
+  body[data-theme="b"] {
+    --bg: #F3EEE4; --surface: #FBF8F2; --surface-2: #EDE6D8; --ink: #1F2A2E; --muted: #6A6458;
+    --line: #DCD3C2; --accent: #C2502D; --accent-ink: #FFF; --accent-soft: #F6E2D9;
+    --warn: #C2502D; --warn-soft: #F6E2D9; --radius: 4px; --radius-sm: 4px;
+    --shadow: none;
+  }
+  body[data-theme="b"] .btn { border-radius: 4px; }
+  body[data-theme="b"] .update { background: transparent; border: 0; box-shadow: none; }
+  body[data-theme="b"] .update-bar { background: transparent; border: 0; padding: 0 0 8px; }
+  body[data-theme="b"] .update-bar .label { background: var(--accent); color: #fff; padding: 2px 12px; border-radius: 4px; font-weight: 700; }
+  body[data-theme="b"] .dots { display: none; }
+  body[data-theme="b"] .update-body { padding: 16px 0 0; display: block; }
+  body[data-theme="b"] .update-icon { display: none; }
+  body[data-theme="b"] .update h1 { font-size: clamp(34px, 6.4vw, 76px); line-height: 1.35; letter-spacing: -.5px; }
+  body[data-theme="b"] .update h1 .l2 { color: var(--ink); font-weight: 300; }
+  body[data-theme="b"] .update h1 .l2 b { color: var(--accent); }
+  body[data-theme="b"] .hero { border-bottom: 1px solid var(--ink); }
+  body[data-theme="b"] section { border-bottom: 1px solid var(--line); }
+  body[data-theme="b"] .symptoms li { background: transparent; border: 0; border-top: 1px solid var(--line); border-radius: 0; padding: 14px 0; }
+  body[data-theme="b"] .card { background: transparent; border: 0; border-top: 3px solid var(--ink); border-radius: 0; padding: 22px 0 0; }
+  body[data-theme="b"] .card .num { background: transparent; padding: 0; font-size: 34px; font-weight: 300; color: var(--accent); }
+  body[data-theme="b"] .promise { background: transparent; color: var(--ink); border-inline-start: 4px solid var(--accent); border-radius: 0;
+    font-size: 22px; font-weight: 500; padding: 4px 22px; }
+  body[data-theme="b"] .dialog { border: 1px solid var(--ink); border-radius: 4px; }
+  body[data-theme="b"] .dialog .q { border-radius: 4px; }
+
+  /* =========================================================
+     جهت ۳: «شب طلایی» — تیره، طلایی، هم‌خانواده با پروپوزال‌ها
+     ========================================================= */
+  body[data-theme="c"] {
+    --bg: #1E2226; --surface: #272C31; --surface-2: #2E343A; --ink: #F2F0EA; --muted: #A3A7AD;
+    --line: #3A4148; --accent: #C9963A; --accent-ink: #1E2226; --accent-soft: rgba(201,150,58,.14);
+    --warn: #C9963A; --warn-soft: rgba(201,150,58,.14);
+    --shadow: 0 20px 50px rgba(0,0,0,.35);
+  }
+  body[data-theme="c"] .hero { text-align: center; padding-top: 72px; }
+  body[data-theme="c"] .update { max-width: 760px; margin: 0 auto; border-inline-start: 4px solid var(--accent); }
+  body[data-theme="c"] .update-body { text-align: start; }
+  body[data-theme="c"] .promise { background: var(--accent); color: var(--accent-ink); }
+  body[data-theme="c"] .core span { color: var(--accent); }
+
+  /* ---------- انتخاب‌گر جهت (فقط برای بررسی، بخشی از سایت نیست) ---------- */
+  .switcher { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); z-index: 50;
+    background: #111; color: #fff; border-radius: 999px; padding: 6px; display: flex; gap: 4px; align-items: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,.25); font-size: 14px; }
+  .switcher span { padding: 0 10px 0 6px; opacity: .7; }
+  .switcher button { border: 0; background: transparent; color: #fff; font: inherit; padding: 7px 14px; border-radius: 999px; cursor: pointer; }
+  .switcher button[aria-pressed="true"] { background: #fff; color: #111; font-weight: 700; }
+
+  /* ---------- موبایل ---------- */
+  @media (max-width: 820px) {
+    body { font-size: 16px; }
+    .wrap { padding: 0 16px; }
+    section { padding: 64px 0; }
+    nav.links a:not(.btn) { display: none; }
+    .problem-grid, .services, .testimonials, .optional { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: 1fr 1fr; }
+    .steps::before { display: none; }
+    .update-body { flex-direction: column; padding: 24px; }
+    .switcher { font-size: 13px; }
+    .switcher span { display: none; }
+  }
+</style>
+</head>
+<body data-theme="a">
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand">نیلوفر حقیقت<small>مشاور یوایکس رایتینگ و سیستم‌های ارتباطی محصول</small></div>
+    <nav class="links">
+      <a href="#services">خدمات</a>
+      <a href="#why">دربارهٔ من</a>
+      <a href="#contact">تماس</a>
+      <a class="btn" href="#contact">رزرو جلسه</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ۱. تیتر اصلی -->
+<section class="hero">
+  <div class="wrap">
+    <div class="update" role="region" aria-label="پیام به‌روزرسانی">
+      <div class="update-bar"><span class="label">به‌روزرسانی</span><span>محصول شما</span><span class="dots"><i></i><i></i><i></i></span></div>
+      <div class="update-body">
+        <div class="update-icon" aria-hidden="true">↻</div>
+        <div>
+          <h1>نسخهٔ جدید محصول شما آماده است.<span class="l2">همه‌چیز به‌روز شد، <b>جز متن‌ها.</b></span></h1>
+          <div class="update-actions">
+            <a class="btn" href="#services">به‌روزرسانی متن‌ها</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ۲. مسئله -->
+<section>
+  <div class="wrap">
+    <div class="problem-grid">
+      <div class="story">
+        <h2>متن‌ها چرا جا می‌مانند؟</h2>
+        <p>اول کار، یک نفر همهٔ متن‌ها را می‌نویسد و همه‌چیز یکدست است.</p>
+        <p>بعد تیم بزرگ می‌شود. فیچرها زیاد می‌شوند. هر کس متن بخش خودش را می‌نویسد.</p>
+        <p>کم‌کم این‌ها پیدا می‌شوند:</p>
+      </div>
+      <ul class="symptoms">
+        <li>یک کار ساده در هر صفحه اسم دیگری دارد.</li>
+        <li>متن یک دکمه چند بار بین دیزاینر، مدیر محصول و نویسنده رفت‌وبرگشت می‌شود.</li>
+        <li>نویسنده‌های تیم گلوگاه می‌شوند و فرصت کار روی مسئله‌های مهم‌تر را ندارند.</li>
+      </ul>
+    </div>
+    <p class="core">بیشتر تیم‌های محصول مشکل نوشتن ندارند،<br><span>مشکل سیستم دارند.</span></p>
+  </div>
+</section>
+
+<!-- ۳. خدمات -->
+<section id="services">
+  <div class="wrap">
+    <h2>چطور متن‌ها را به‌روز می‌کنیم</h2>
+    <p class="lead">سه قدم که پشت سر هم می‌آیند. می‌توانید از هر کدام شروع کنید.</p>
+    <div class="services">
+      <article class="card">
+        <span class="num">۱</span>
+        <h3>ممیزی ارتباطی محصول</h3>
+        <p class="tag">تصویری اولویت‌بندی‌شده از مسئله‌های ارتباطی محصول، نه فهرستی از متن‌هایی که باید اصلاح شوند.</p>
+        <p>بررسی می‌کنیم چه کسی، کجا و چطور متن محصول را می‌نویسد، و یافته‌ها را با تیکت‌های پشتیبانی و داده‌های قیف کاربران تطبیق می‌دهیم.</p>
+        <div class="out"><b>خروجی</b>گزارشی که برای هر مسئله شاهد، اثر روی کاربر و کسب‌وکار، اولویت و پیشنهاد اصلاح دارد.</div>
+      </article>
+      <article class="card">
+        <span class="num">۲</span>
+        <h3>ساخت سیستم محتوا</h3>
+        <p class="tag">یک زبان مشترک، تا هیچ فیچر جدیدی از صفر شروع نکند.</p>
+        <div class="out"><b>خروجی</b>
+          <ul>
+            <li>لحن و صدای محصول برای هر موقعیت</li>
+            <li>واژه‌نامهٔ اصطلاحات تأییدشده</li>
+            <li>قواعد نگارش فارسی</li>
+            <li>الگوهای متن با نمونه‌های درست و نادرست</li>
+          </ul>
+        </div>
+      </article>
+      <article class="card">
+        <span class="num">۳</span>
+        <h3>دستیار هوش مصنوعی روی سیستم محتوا</h3>
+        <p class="tag">هر کسی در تیم، متن یکدست و مطابق سیستم می‌نویسد.</p>
+        <div class="out"><b>خروجی</b>دستیاری که قاعده‌های سیستم شما را بلد است و با نمونه‌های واقعی محصولتان تنظیم شده؛ به‌همراه جلسه‌های آموزش، قالب و چک‌لیست برای تیم.</div>
+      </article>
+    </div>
+    <div class="optional">
+      <div><span class="badge">گزینهٔ اختیاری</span><h3>همراهی ماهانه</h3><p class="lead" style="margin:0">بعد از پروژه، تا سیستم و دستیار با محصول به‌روز بمانند.</p></div>
+      <ul>
+        <li>جلسهٔ هفتگی با تیم محصول برای کار مشترک با دستیار و بررسی خروجی‌هایش</li>
+        <li>بازبینی متن فیچرهای جدید پیش از انتشار</li>
+        <li>به‌روزرسانی سیستم محتوا و دانش دستیار بر اساس نیازهای تازه</li>
+      </ul>
+    </div>
+    <div class="center"><a class="btn" href="#contact">انتخاب نقطهٔ شروع</a></div>
+  </div>
+</section>
+
+<!-- ۴. چرا من -->
+<section id="why">
+  <div class="wrap">
+    <div class="why-head">
+      <h2 style="margin:0">این مسیر را یک بار از صفر رفته‌ام</h2>
+      <div class="stats">
+        <div class="stat"><b>۱۲ سال</b><span>سابقهٔ حرفه‌ای</span></div>
+        <div class="stat"><b>۷ سال</b><span>تخصص در یوایکس رایتینگ</span></div>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="dot">۱</div><h3>اولین یوایکس رایتر</h3><p>وقتی به تیم دیزاین اسنپ پیوستم، یوایکس رایتینگ هنوز جایی در فرایند طراحی نداشت. واردش کردم.</p></div>
+      <div class="step"><div class="dot">۲</div><h3>ساختن تیم</h3><p>تیم یوایکس رایتینگ اسنپ را ساختم و برایش مسیر شغلی تعریف کردم.</p></div>
+      <div class="step"><div class="dot">۳</div><h3>از متن به سیستم</h3><p>از نوشتن متن‌ها به طراحی سیستمی رسیدم که ارتباط محصول و کاربر را در کل سوپراپ یکدست می‌کرد.</p></div>
+      <div class="step"><div class="dot">۴</div><h3>سیستم در قالب هوش مصنوعی</h3><p>آن سیستم را ابزاری کردم که هر کسی در تیم که متن محصول می‌نویسد، با آن کار کند.</p></div>
+    </div>
+    <div class="promise">برای تیم شما هم همین را می‌سازم: چارچوبی که بعد از پروژه در دست تیم می‌ماند.</div>
+    <div class="testimonials">
+      <div class="placeholder">جای توصیه‌نامهٔ ۱</div>
+      <div class="placeholder">جای توصیه‌نامهٔ ۲</div>
+      <div class="placeholder">جای توصیه‌نامهٔ ۳</div>
+    </div>
+  </div>
+</section>
+
+<!-- ۵. دعوت -->
+<section class="cta" id="contact">
+  <div class="wrap">
+    <div class="dialog" role="dialog" aria-labelledby="cta-title">
+      <div class="q" aria-hidden="true">؟</div>
+      <h2 id="cta-title">به‌روزرسانی متن‌ها را شروع کنیم؟</h2>
+      <p>در یک جلسهٔ کوتاه، از وضع فعلی متن‌های محصولتان می‌گویید و با هم به نتیجه می‌رسیم که از کدام قدم شروع کنیم.</p>
+      <div class="actions">
+        <a class="btn" href="#">بله، جلسه رزرو شود</a>
+        <a class="btn ghost" href="#">فعلاً نه، عضو خبرنامه می‌شوم</a>
+      </div>
+    </div>
+    <p class="contact">ایمیل و لینکدین: [جای راه‌های تماس]</p>
+  </div>
+</section>
+
+<footer><div class="wrap">© نیلوفر حقیقت</div></footer>
+
+<div class="switcher" role="group" aria-label="انتخاب جهت طراحی">
+  <span>پیشنهاد طراحی:</span>
+  <button data-t="a" aria-pressed="true">۱. سیستمی</button>
+  <button data-t="b" aria-pressed="false">۲. دفتر</button>
+  <button data-t="c" aria-pressed="false">۳. شب طلایی</button>
+</div>
+
+<script>
+  const btns = document.querySelectorAll('.switcher button');
+  btns.forEach(b => b.addEventListener('click', () => {
+    document.body.dataset.theme = b.dataset.t;
+    btns.forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+  }));
+</script>
+</body>
+</html>

@@ -39,6 +39,8 @@ const { title, description, header, bookingHref, linkedinHref, footer } = Astro.
   <meta property="og:locale" content="fa_IR">
   <meta name="theme-color" content="#F6F6F3">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <!-- اگر جاوااسکریپت باشد، حرکت‌های صفحه فعال می‌شوند؛ اگر نباشد، همه‌چیز از اول کامل نمایش داده می‌شود. -->
+  <script is:inline>document.documentElement.classList.add('js');</script>
 </head>
 <body>
   <a class="skip-link" href="#main">رفتن به محتوای اصلی</a>
@@ -56,7 +58,7 @@ const { title, description, header, bookingHref, linkedinHref, footer } = Astro.
             <span class="social-label">{header.linkedin}</span>
           </a>
         )}
-        <a class="btn" href={bookingHref}>{header.button}</a>
+        <a class="btn" href={bookingHref} {...(bookingHref.startsWith('http') ? { target: '_blank', rel: 'noopener' } : {})}>{header.button}</a>
       </nav>
     </div>
   </header>

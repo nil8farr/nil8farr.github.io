@@ -69,6 +69,9 @@ section { padding: 88px 0; scroll-margin-top: 16px; }
 .site-nav { display: flex; gap: 24px; align-items: center; font-size: 15px; }
 .site-nav a:not(.btn) { text-decoration: none; color: var(--muted); }
 .site-nav a:not(.btn):hover { color: var(--ink); }
+.site-nav .social { display: inline-flex; align-items: center; gap: 8px; }
+.site-nav .social:hover { color: var(--accent); }
+.social-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .menu-btn {
   display: none; border: 0; background: transparent; font: inherit; font-size: 15px; color: var(--ink);
   padding: 8px 14px; border-radius: 999px; box-shadow: inset 0 0 0 1.5px var(--line); cursor: pointer;
@@ -166,6 +169,7 @@ section { padding: 88px 0; scroll-margin-top: 16px; }
   .site-nav.open { display: flex; }
   .site-nav a:not(.btn) { padding: 10px 4px; border-bottom: 1px solid var(--line); }
   .site-nav .btn { margin-top: 8px; }
+  .social-label { position: static; width: auto; height: auto; overflow: visible; clip: auto; }
   .problem-grid, .services, .testimonials, .optional { grid-template-columns: 1fr; }
   .services .card:not(:last-child)::after { content: "↓"; left: 50%; top: auto; bottom: -15px; transform: translateX(-50%); }
   .steps { grid-template-columns: 1fr 1fr; }

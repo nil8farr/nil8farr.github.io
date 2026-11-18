@@ -15,6 +15,8 @@ seo:
 links:
   booking: "#contact"
   newsletter: "https://t.me/harfehesab_fa"
+  # لینکدین: تا وقتی خالی است، آیکون لینکدین در سربرگ نشان داده نمی‌شود.
+  linkedin: "https://www.linkedin.com/in/niloofar-eslami-haghighat/"
 
 header:
   name: "نیلوفر حقیقت"
@@ -26,6 +28,7 @@ header:
     - { label: "دربارهٔ من", href: "#why" }
     - { label: "تماس", href: "#contact" }
   button: "رزرو جلسه"
+  linkedin: "لینکدین"
 
 hero:
   barLabel: "به‌روزرسانی"
@@ -119,7 +122,8 @@ cta:
   # نمونهٔ شکل نوشتن:
   # - { label: "ایمیل", href: "mailto:…" }
   # - { label: "لینکدین", href: "https://www.linkedin.com/in/…" }
-  contact: []
+  contact:
+    - { label: "لینکدین", href: "https://www.linkedin.com/in/niloofar-eslami-haghighat/" }
 
 footer: "© ۱۴۰۵ نیلوفر حقیقت"
 ---

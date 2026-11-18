@@ -11,6 +11,7 @@ const hasNewsletter = Boolean(c.links.newsletter);
   description={c.seo.description}
   header={c.header}
   bookingHref={c.links.booking}
+  linkedinHref={c.links.linkedin}
   footer={c.footer}
 >
   <!-- ۱. تیتر اصلی: شکل هشدار به‌روزرسانی -->
@@ -141,7 +142,7 @@ const hasNewsletter = Boolean(c.links.newsletter);
       </div>
       {c.cta.contact.length > 0 && (
         <ul class="contact">
-          {c.cta.contact.map((x: any) => <li><a href={x.href}>{x.label}</a></li>)}
+          {c.cta.contact.map((x: any) => <li><a href={x.href} {...(x.href.startsWith('http') ? { target: '_blank', rel: 'noopener' } : {})}>{x.label}</a></li>)}
         </ul>
       )}
     </div>

@@ -1,0 +1,34 @@
+---
+// فهرست نوشته‌های دفترچه. نوشته‌ها در src/content/notes هستند و متن‌های این صفحه در src/copy/notebook.md.
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+import { frontmatter as c } from '../../copy/home.md';
+import { frontmatter as n } from '../../copy/notebook.md';
+
+const notes = (await getCollection('notes', (e) => !e.data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const faDate = (d: Date) => new Intl.DateTimeFormat('fa-IR-u-ca-persian', { day: 'numeric', month: 'long', year: 'numeric' }).format(d);
+---
+<Base title={n.seo.title} description={n.seo.description} header={c.header} bookingHref={c.links.booking} linkedinHref={c.links.linkedin} footer={c.footer}>
+  <section class="notebook" aria-labelledby="notebook-title">
+    <div class="wrap">
+      <h1 id="notebook-title">{n.title}</h1>
+      <p class="lead">{n.lead}</p>
+      {notes.length === 0 ? (
+        <p class="notebook-empty">{n.empty}</p>
+      ) : (
+        <ol class="note-list">
+          {notes.map((note) => (
+            <li>
+              <a href={`/notebook/${note.id}/`}>
+                <time datetime={note.data.date.toISOString().slice(0, 10)}>{faDate(note.data.date)}</time>
+                <h2>{note.data.title}</h2>
+                {note.data.description && <p>{note.data.description}</p>}
+              </a>
+            </li>
+          ))}
+        </ol>
+      )}
+    </div>
+  </section>
+</Base>

@@ -26,9 +26,12 @@ header:
   tagline: "مشاور یوایکس رایتینگ و سیستم‌های ارتباطی محصول"
   menu: "منو"
   menuClose: "بستن"
+  # منوی بالای سایت. هر گزینه‌ای که href آن خالی باشد ("")، نشان داده نمی‌شود.
+  # «دفترچه»: تا وقتی هیچ نوشته‌ای در پوشهٔ src/content/notes نیست، خودبه‌خود پنهان می‌ماند.
   nav:
     - { label: "خدمات", href: "#services" }
     - { label: "دربارهٔ من", href: "#why" }
+    - { label: "دفترچه", href: "/notebook/" }
     - { label: "تماس", href: "#contact" }
   button: "رزرو جلسه"
   linkedin: "لینکدین"

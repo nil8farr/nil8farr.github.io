@@ -48,15 +48,33 @@ const introParts: { text: string; em: boolean }[] = [];
   linkedinHref={c.links.linkedin}
   footer={c.footer}
 >
+  <!-- ۰. صفحهٔ شروع: فقط نوار «به‌روزرسانی محصول شما» با سه نقطه، و اسم نیلوفر زیرش. حدود دو ثانیه.
+       فقط بار اول در هر بازدید. بدون جاوااسکریپت، با لینک مستقیم به یک بخش، یا اگر کاربر حرکت را در دستگاهش کم کرده، نشان داده نمی‌شود. -->
+  <script is:inline>
+    (function () {
+      var seen = false;
+      try { seen = sessionStorage.getItem('splashSeen') === '1'; } catch (e) {}
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!seen && !reduce && !location.hash) document.documentElement.classList.add('splash-on');
+    })();
+  </script>
+  <div class="splash" id="splash" aria-hidden="true">
+    <div class="splash-card">
+      <div class="update-bar">
+        <span class="label">{c.hero.barLabel}</span>
+        <span>{c.hero.barContext}</span>
+        <span class="dots"><i></i><i></i><i></i></span>
+      </div>
+      <div class="splash-progress"><i></i></div>
+    </div>
+    <p class="splash-name">{c.header.name}</p>
+  </div>
+
   <!-- ۱. تیتر اصلی: شکل هشدار به‌روزرسانی -->
   <section class="hero" aria-labelledby="hero-title">
     <div class="wrap">
+      <!-- نوار «به‌روزرسانی محصول شما» فقط در صفحهٔ شروع است، نه این‌جا. -->
       <div class="update">
-        <div class="update-bar">
-          <span class="label">{c.hero.barLabel}</span>
-          <span>{c.hero.barContext}</span>
-          <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
-        </div>
         <div class="update-body">
           <div class="update-icon" aria-hidden="true">
             <svg class="i-refresh" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 4v5h-5"/></svg>
@@ -236,10 +254,6 @@ const introParts: { text: string; em: boolean }[] = [];
     <div class="wrap">
       <div class="scrim">
         <div class="confirm">
-          <div class="confirm-bar">
-            <span class="label">{c.hero.barLabel}</span>
-            <span>{c.hero.barContext}</span>
-          </div>
           <div class="confirm-body">
             <h2 id="cta-title">{c.cta.title}</h2>
             <p>{c.cta.text}</p>
@@ -273,6 +287,24 @@ const introParts: { text: string; em: boolean }[] = [];
 </Base>
 
 <script>
+  // صفحهٔ شروع: نوار به‌روزرسانی پر می‌شود و کنار می‌رود. با کلیک یا Esc زودتر کنار می‌رود.
+  const SPLASH_TIME = 1800; // میلی‌ثانیه تا شروع کنار رفتن
+  const SPLASH_FADE = 400;
+  const rootEl = document.documentElement;
+  if (rootEl.classList.contains('splash-on')) {
+    try { sessionStorage.setItem('splashSeen', '1'); } catch (e) {}
+    let closed = false;
+    const closeSplash = () => {
+      if (closed) return;
+      closed = true;
+      rootEl.classList.add('splash-out');
+      window.setTimeout(() => rootEl.classList.remove('splash-on', 'splash-out'), SPLASH_FADE);
+    };
+    window.setTimeout(closeSplash, SPLASH_TIME);
+    document.getElementById('splash')?.addEventListener('click', closeSplash);
+    window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSplash(); });
+  }
+
   // تیتر: با زدن «به‌روزرسانی متن‌ها» یک به‌روزرسانی کوتاه در خود قاب اجرا می‌شود:
   // آیکون می‌چرخد، نوار پیشرفت پایین قاب پر می‌شود و آیکون تیک نیلی می‌شود. بعد صفحه نرم به بخش خدمات می‌رود.
   const heroBtn = document.querySelector('.hero-btn');
@@ -357,7 +389,7 @@ const introParts: { text: string; em: boolean }[] = [];
           scrim.classList.add('is-in');
           so.disconnect();
         }
-      }, { rootMargin: '0px 0px -25% 0px' });
+      }, { rootMargin: '0px 0px -40% 0px' }); // وقتی بالای قاب به حدود وسط صفحه رسید
       so.observe(scrim);
     }
   }

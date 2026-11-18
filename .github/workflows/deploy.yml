@@ -1,0 +1,38 @@
+# انتشار خودکار سایت روی GitHub Pages
+# هر بار که تغییری به شاخهٔ main فرستاده شود (Push origin)، سایت ساخته و منتشر می‌شود.
+name: انتشار سایت
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# کمترین دسترسی لازم: فقط خواندن کد و انتشار روی Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# اگر دو انتشار پشت سر هم شروع شد، فقط آخری انجام می‌شود.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: withastro/action@v3
+        with:
+          node-version: 22
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

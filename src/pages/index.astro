@@ -6,7 +6,7 @@ import { frontmatter as c } from '../copy/home.md';
 const toFa = (n: number) => n.toLocaleString('fa-IR');
 const hasNewsletter = Boolean(c.links.newsletter);
 // لینک‌هایی که به بیرون از سایت می‌روند، در صفحهٔ جدید باز می‌شوند.
-const ext = (href: string) => (href.startsWith('http') ? { target: '_blank', rel: 'noopener' } : {});
+const ext = (href: string) => (href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {});
 // آیکون راه‌های تماس
 const icons: Record<string, string> = {
   email: '<path d="M4 6h16v12H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 7l8 6 8-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>',
@@ -49,15 +49,7 @@ const introParts: { text: string; em: boolean }[] = [];
   footer={c.footer}
 >
   <!-- ۰. صفحهٔ شروع: فقط نوار «به‌روزرسانی محصول شما» با سه نقطه، و اسم نیلوفر زیرش. حدود دو ثانیه.
-       فقط بار اول در هر بازدید. بدون جاوااسکریپت، با لینک مستقیم به یک بخش، یا اگر کاربر حرکت را در دستگاهش کم کرده، نشان داده نمی‌شود. -->
-  <script is:inline>
-    (function () {
-      var seen = false;
-      try { seen = sessionStorage.getItem('splashSeen') === '1'; } catch (e) {}
-      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (!seen && !reduce && !location.hash) document.documentElement.classList.add('splash-on');
-    })();
-  </script>
+       تصمیم نشان دادنش در public/js/early.js است. -->
   <div class="splash" id="splash" aria-hidden="true">
     <div class="splash-card">
       <div class="update-bar">

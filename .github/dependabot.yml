@@ -1,0 +1,11 @@
+# هر ماه بسته‌های نرم‌افزاری سایت و ابزارهای انتشار را برای به‌روزرسانی‌های امنیتی بررسی می‌کند.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

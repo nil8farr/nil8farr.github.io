@@ -48,7 +48,7 @@ const introParts: { text: string; em: boolean }[] = [];
   linkedinHref={c.links.linkedin}
   footer={c.footer}
 >
-  <!-- ۰. صفحهٔ شروع: فقط نوار «به‌روزرسانی محصول شما» با سه نقطه، و اسم نیلوفر زیرش. حدود دو ثانیه.
+  <!-- ۰. صفحهٔ شروع: فقط نوار «به‌روزرسانی محصول شما» با سه نقطه، و اسم نیلوفر زیرش. کمتر از نیم‌ثانیه.
        تصمیم نشان دادنش در public/js/early.js است. -->
   <div class="splash" id="splash" aria-hidden="true">
     <div class="splash-card">
@@ -79,6 +79,7 @@ const introParts: { text: string; em: boolean }[] = [];
             </h1>
             <div class="update-actions">
               <a class="btn hero-btn" href="#services">{c.hero.button}</a>
+              <a class="hero-secondary" href={c.links.booking} {...ext(c.links.booking)}>{c.hero.secondary}</a>
             </div>
           </div>
         </div>
@@ -189,6 +190,9 @@ const introParts: { text: string; em: boolean }[] = [];
           <div class="final-row">
             <p class="ready">{c.services.progress.ready}</p>
             <a class="btn" href={c.links.booking} {...ext(c.links.booking)}>{c.services.button}</a>
+            {c.links.telegram && c.cta.fallbackLink && (
+              <p class="fallback services-fallback">{c.services.fallbackStart}<a href={c.links.telegram} {...ext(c.links.telegram)}>{c.cta.fallbackLink}</a></p>
+            )}
           </div>
         </li>
       </ol>
@@ -241,7 +245,7 @@ const introParts: { text: string; em: boolean }[] = [];
 
   <!-- ۵. دعوت: شکل پنجرهٔ بازشوی تأیید روی یک پس‌زمینهٔ کدر.
        فقط ظاهرش پنجرهٔ بازشوست: در کد یک بخش معمولی است، جلوی چیزی را نمی‌گیرد و خودبه‌خود باز نمی‌شود.
-       وقتی به دید می‌رسد، یک بار با حرکت کوچک «باز» می‌شود. -->
+       محتوای آن همیشه دیده می‌شود. -->
   <section class="cta" id="contact" aria-labelledby="cta-title">
     <div class="wrap">
       <div class="scrim">
@@ -254,7 +258,7 @@ const introParts: { text: string; em: boolean }[] = [];
               {hasNewsletter && <a class="btn ghost" href={c.links.newsletter}>{c.cta.secondary}</a>}
             </div>
             {c.links.telegram && c.cta.fallbackLink && (
-              <p class="fallback">{c.cta.fallbackStart}<a href={c.links.telegram} {...ext(c.links.telegram)}>{c.cta.fallbackLink}</a></p>
+              <p class="fallback">{c.cta.fallbackStart}<a href={c.links.telegram} {...ext(c.links.telegram)}><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons.telegram} />{c.cta.fallbackLink}</a></p>
             )}
           </div>
         </div>
@@ -279,78 +283,27 @@ const introParts: { text: string; em: boolean }[] = [];
 </Base>
 
 <script>
-  // صفحهٔ شروع: نوار به‌روزرسانی پر می‌شود و کنار می‌رود. با کلیک یا Esc زودتر کنار می‌رود.
-  const SPLASH_TIME = 1800; // میلی‌ثانیه تا شروع کنار رفتن
-  const SPLASH_FADE = 400;
-  const rootEl = document.documentElement;
-  if (rootEl.classList.contains('splash-on')) {
-    try { sessionStorage.setItem('splashSeen', '1'); } catch (e) {}
-    let closed = false;
-    const closeSplash = () => {
-      if (closed) return;
-      closed = true;
-      rootEl.classList.add('splash-out');
-      window.setTimeout(() => rootEl.classList.remove('splash-on', 'splash-out'), SPLASH_FADE);
-    };
-    window.setTimeout(closeSplash, SPLASH_TIME);
-    document.getElementById('splash')?.addEventListener('click', closeSplash);
-    window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSplash(); });
-  }
 
   // تیتر: با زدن «به‌روزرسانی متن‌ها» یک به‌روزرسانی کوتاه در خود قاب اجرا می‌شود:
-  // آیکون می‌چرخد، نوار پیشرفت پایین قاب پر می‌شود و آیکون تیک نیلی می‌شود. بعد صفحه نرم به بخش خدمات می‌رود.
+  // آیکون می‌چرخد و نوار پر می‌شود؛ رفتن به خدمات منتظر حرکت نمی‌ماند.
   const heroBtn = document.querySelector('.hero-btn');
   const heroBox = document.querySelector('.update');
   const UPDATE_TIME = 750; // میلی‌ثانیه
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const goToServices = () => {
-    document.getElementById('services')?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
+    document.getElementById('services')?.scrollIntoView({ behavior: 'instant' });
     history.pushState(null, '', '#services');
   };
   heroBtn?.addEventListener('click', (e) => {
-    if (reduceMotion || !heroBox) return;
     e.preventDefault();
-    if (heroBox.classList.contains('is-updated')) { goToServices(); return; }
+    goToServices();
+    if (reduceMotion || !heroBox || heroBox.classList.contains('is-updated')) return;
     heroBox.classList.add('is-updating');
     window.setTimeout(() => {
       heroBox.classList.add('is-updated');
-      window.setTimeout(goToServices, 200);
     }, UPDATE_TIME);
   });
 
-  // بخش مسئله: هر هشدار با اسکرول خودِ خواننده ظاهر می‌شود، نه با زمان‌سنج.
-  // هر ردیف وقتی به وسط صفحه برسد پیدا می‌شود؛ پس هشدارها هم‌پای اسکرول، یکی‌یکی می‌آیند.
-  const SCROLL_START = 80; // پیش از این مقدار اسکرول، هیچ هشداری نمی‌آید
-  const alertsBox = document.querySelector('.alerts');
-  if (alertsBox) {
-    const rows = Array.from(alertsBox.querySelectorAll<HTMLElement>(':scope > li'));
-    const showAll = () => rows.forEach((r) => r.classList.add('on'));
-    if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      showAll();
-    } else {
-      const ALERT_GAP = 900; // کمترین فاصلهٔ آمدن دو هشدار (میلی‌ثانیه)
-      let nextAt = 0;
-      const waiting = new Set<HTMLElement>();
-      const flush = () => {
-        if (window.scrollY <= SCROLL_START) return;
-        // هر هشدار دست‌کم ALERT_GAP بعد از قبلی می‌آید، حتی اگر خواننده تند اسکرول کند.
-        rows.filter((r) => waiting.has(r)).forEach((r) => {
-          waiting.delete(r);
-          ro.unobserve(r);
-          const at = Math.max(Date.now(), nextAt);
-          nextAt = at + ALERT_GAP;
-          setTimeout(() => r.classList.add('on'), at - Date.now());
-        });
-      };
-      const ro = new IntersectionObserver((entries) => {
-        // ردیفی که به وسط صفحه رسیده، یا خواننده با اسکرول تند از آن رد شده (بالای صفحه است)، در صف می‌رود.
-        entries.forEach((e) => { if (e.isIntersecting || e.boundingClientRect.top < 0) waiting.add(e.target as HTMLElement); });
-        flush();
-      }, { rootMargin: '0px 0px -50% 0px' }); // یعنی وقتی ردیف به وسط صفحه رسید
-      rows.forEach((r) => ro.observe(r));
-      window.addEventListener('scroll', flush, { passive: true });
-    }
-  }
 
   // جملهٔ محوری: وقتی به وسط صفحه می‌رسد و خواننده فرصت کرده جمله را بخواند،
   // «نوشتن» مثل ویرایشگر متن انتخاب می‌شود و خط می‌خورد، بعد «سیستم» هایلایت می‌شود.
@@ -370,21 +323,6 @@ const introParts: { text: string; em: boolean }[] = [];
     }
   }
 
-  // پنجرهٔ تأیید آخر صفحه: وقتی به دید می‌رسد، یک بار باز می‌شود.
-  const scrim = document.querySelector('.scrim');
-  if (scrim) {
-    if (!('IntersectionObserver' in window)) {
-      scrim.classList.add('is-in');
-    } else {
-      const so = new IntersectionObserver((entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          scrim.classList.add('is-in');
-          so.disconnect();
-        }
-      }, { rootMargin: '0px 0px -40% 0px' }); // وقتی بالای قاب به حدود وسط صفحه رسید
-      so.observe(scrim);
-    }
-  }
 
   // نوار پیشرفت خدمات: قدم‌ها با اسکرول، به ترتیب و یکی‌یکی جلو می‌روند.
   // وقتی قدمی شروع می‌شود، قدم قبلی «انجام شد» می‌شود و خط پیشرفت تا قدم تازه پر می‌شود.

@@ -18,6 +18,7 @@ interface Props {
     menuClose: string;
     nav: { label: string; href: string }[];
     button: string;
+    buttonShort: string;
     linkedin: string;
   };
   bookingHref: string;
@@ -59,6 +60,7 @@ const navItems = header.nav
   <header class="site-header">
     <div class="wrap">
       <a class="brand" href="/">{header.name}<small>{header.tagline}</small></a>
+      <a class="btn mobile-booking" href={bookingHref} target="_blank" rel="noopener noreferrer">{header.buttonShort}</a>
       <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav"
         data-open={header.menuClose} data-closed={header.menu}>{header.menu}</button>
       <nav class="site-nav" id="site-nav" aria-label="منوی اصلی">

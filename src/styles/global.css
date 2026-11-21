@@ -24,6 +24,7 @@
 
   /* رنگ هشدار: کهربایی. فقط برای نشانه‌های هشدار، هیچ‌وقت برای دکمه. */
   --warn: #B7791F;
+  --warn-text: #8A570F;
   --warn-soft: #FFF4E0;
 
   --radius: 14px;
@@ -76,7 +77,9 @@ section { padding: 52px 0; scroll-margin-top: 16px; }
 .site-nav { display: flex; gap: 24px; align-items: center; font-size: 15px; }
 .site-nav a:not(.btn) { text-decoration: none; color: var(--muted); }
 .site-nav a:not(.btn):hover { color: var(--ink); }
-.site-nav .social { display: inline-flex; align-items: center; gap: 8px; }
+.site-nav .social { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-width: 24px; min-height: 24px; }
+.mobile-booking { display: none; }
+.hero-secondary { display: block; width: fit-content; margin-top: 12px; color: var(--accent); font-size: 15px; min-height: 24px; }
 .site-nav .social:hover { color: var(--accent); }
 .social-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .menu-btn {
@@ -107,7 +110,7 @@ html.splash-on .splash {
 .splash-progress i { display: block; height: 100%; width: 0; background: var(--second); animation: splash-fill 1.4s cubic-bezier(.4, 0, .2, 1) .3s forwards; }
 /* ردی از اسم نیلوفر زیر نوار، تا معلوم باشد این خود سایت است، نه بارگذاری مرورگر. */
 .splash-name { margin: 0; font-size: 13px; font-weight: 700; color: var(--muted); letter-spacing: 0; animation: splash-card .45s ease .15s both; }
-html.splash-out .splash { animation: splash-out .4s ease forwards; }
+html.splash-out .splash { animation: splash-out .15s ease forwards; }
 @keyframes splash-card { from { opacity: 0; transform: translateY(10px); } }
 @keyframes splash-fill { to { width: 100%; } }
 @keyframes splash-out { to { opacity: 0; visibility: hidden; } }
@@ -175,7 +178,7 @@ html.js .squiggle::after { animation: squiggle 1.1s ease-in-out 1.4s both; }
 }
 
 /* ───────── مسئله ───────── */
-.alerts-tag { display: inline-block; margin-inline-start: 8px; padding: 0 10px; border-radius: 999px; background: var(--warn-soft); color: var(--warn); font-size: 12.5px; font-weight: 700; line-height: 1.9; vertical-align: 2px; }
+.alerts-tag { display: inline-block; margin-inline-start: 8px; padding: 0 10px; border-radius: 999px; background: var(--warn-soft); color: var(--warn-text); font-size: 12.5px; font-weight: 700; line-height: 1.9; vertical-align: 2px; }
 /* هشدارها: هر نشانه با یک «!» کوچک. */
 .symptoms { list-style: none; padding: 0; display: grid; }
 .symptoms li { display: flex; line-height: 1.8; }
@@ -193,9 +196,6 @@ html.js .squiggle::after { animation: squiggle 1.1s ease-in-out 1.4s both; }
 .two-alerts .symptoms li.more { background: transparent; box-shadow: none; border-inline-start-color: transparent; color: var(--muted); font-size: 15.5px; padding-block: 6px; }
 .two-alerts .symptoms li.more::before { content: "…"; background: transparent; color: var(--muted); line-height: 1; padding-bottom: 6px; }
 @media (max-width: 760px) { .two-col { grid-template-columns: 1fr; gap: 20px; } }
-/* هشدارها هم‌پای اسکرول، یکی‌یکی وارد می‌شوند (زمان‌بندی در اسکریپت پایین صفحه). */
-html.js .alerts > li { opacity: 0; transform: translateY(12px); transition: opacity 1.2s ease, transform 1.3s cubic-bezier(.22, 1, .36, 1); }
-html.js .alerts > li.on { opacity: 1; transform: none; }
 /* پل بین مسئله و خدمات: نوار تمام‌عرض، با یک فلش کوچک رو به پایین در لبهٔ پایین. */
 .bridge { position: relative; background: var(--second-soft); padding: 56px 0; }
 .bridge::after { content: ""; position: absolute; left: 50%; bottom: -17px; transform: translateX(-50%); border-top: 18px solid var(--second-soft); border-inline: 22px solid transparent; }
@@ -298,20 +298,6 @@ html.js .p-step.is-active .status { background: var(--second-soft); color: var(-
 .card .tag { font-weight: 500; margin: 12px 0 14px; }
 .card .out { font-size: 15px; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 12px; }
 
-html.js .p-step .card-more {
-  grid-template-rows: 0fr; opacity: 0;
-  transition: grid-template-rows .65s cubic-bezier(.2, .7, .2, 1), opacity .5s ease .1s;
-}
-html.js .p-step.is-open .card-more { grid-template-rows: 1fr; opacity: 1; }
-html.js .p-step.is-open .card { box-shadow: var(--shadow); border-color: transparent; }
-
-/* بولت‌ها پشت سر هم، ولی سریع: کل فهرست زیر نیم‌ثانیه کامل می‌شود. */
-html.js .p-step .out li { opacity: 0; transform: translateY(4px); transition: opacity .4s ease, transform .4s ease; }
-html.js .p-step.is-open .out li { opacity: 1; transform: none; }
-html.js .p-step.is-open .out li:nth-child(1) { transition-delay: .3s; }
-html.js .p-step.is-open .out li:nth-child(2) { transition-delay: .45s; }
-html.js .p-step.is-open .out li:nth-child(3) { transition-delay: .6s; }
-html.js .p-step.is-open .out li:nth-child(4) { transition-delay: .75s; }
 
 /* آخر نوار: «به‌روزرسانی آماده است» */
 /* گزینهٔ اختیاری: دایرهٔ خط‌چین با +، برچسب «گزینهٔ اختیاری» نیلی. */
@@ -379,14 +365,12 @@ html.js .p-final:not(.is-done) .ready { background: var(--surface-2); color: var
 .confirm p { color: var(--muted); margin: 0; }
 /* دکمه‌ها روی هم و تمام‌عرض، چون متنشان بلند است (مثل پنجره‌های تأیید در iOS). */
 .confirm .actions { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; }
-.confirm .fallback { margin-top: 14px; font-size: 13.5px; text-align: center; }
-.confirm .fallback a { color: var(--accent); font-weight: 500; }
-/* پنجرهٔ آخر مثل یک پاپ‌آپ واقعی، یک‌باره می‌پرد روی صفحه: زمینه تند تیره می‌شود و پنجره با یک جهش کوچک باز می‌شود. */
-html.js .scrim { background: transparent; transition: background .12s ease; }
-html.js .scrim.is-in { background: rgba(28, 29, 31, .12); }
-html.js .scrim .confirm { opacity: 0; transform: scale(.7); }
-html.js .scrim.is-in .confirm { animation: pop .34s cubic-bezier(.34, 1.7, .5, 1) both; }
-@keyframes pop { from { opacity: 0; transform: scale(.7); } 40% { opacity: 1; } to { opacity: 1; transform: none; } }
+.fallback { font-size: 15px; color: var(--muted); }
+.services-fallback { flex-basis: 100%; margin: 0; }
+.fallback a { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; min-width: 24px; color: var(--accent); font-weight: 500; }
+.confirm .fallback { margin-top: 14px; text-align: center; }
+.confirm .fallback a { border: 1px solid var(--accent); border-radius: var(--radius-sm); padding: 6px 12px; margin-top: 6px; }
+.fallback svg { width: 20px; height: 20px; flex: none; }
 /* راه‌های تماس زیر پنجره: دکمه‌های کوچک با آیکون. */
 .contact { max-width: 560px; margin: 24px auto 0; text-align: center; }
 .contact-title { margin: 0 0 10px; font-size: 14px; color: var(--muted); }
@@ -407,11 +391,14 @@ html.js .scrim.is-in .confirm { animation: pop .34s cubic-bezier(.34, 1.7, .5, 1
   .wrap { padding: 0 16px; }
   section { padding: 40px 0; }
   .menu-btn { display: inline-flex; }
-  .site-header .wrap { flex-wrap: wrap; }
+  .site-header .wrap { flex-wrap: wrap; gap: 8px; }
+  .brand { flex: 1; min-width: 0; font-size: 17px; }
+  .brand small { max-width: 130px; font-size: 10px; }
+  .mobile-booking { display: inline-flex; padding: 9px 12px; font-size: 13px; }
   .site-nav { order: 3; width: 100%; flex-direction: column; align-items: stretch; gap: 4px; display: none; padding-top: 12px; }
   .site-nav.open { display: flex; }
   .site-nav a:not(.btn) { padding: 10px 4px; border-bottom: 1px solid var(--line); }
-  .site-nav .btn { margin-top: 8px; }
+  .site-nav .btn { display: none; }
   .social-label { position: static; width: auto; height: auto; overflow: visible; clip: auto; }
   .testimonials { grid-template-columns: 1fr; }
   .p-step { padding-inline-start: 50px; }

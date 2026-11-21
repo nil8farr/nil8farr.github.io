@@ -11,5 +11,8 @@ Astro.response.status = 404;
     <p>{error.body}</p>
     <a class="btn" href="/">{error.home}</a>
     <p><a href={c.links.booking} target="_blank" rel="noopener noreferrer">{error.booking}</a></p>
+    {c.links.telegram && c.cta.fallbackLink && (
+      <p>{c.cta.fallbackStart}<a href={c.links.telegram} target="_blank" rel="noopener noreferrer">{c.cta.fallbackLink}</a></p>
+    )}
   </section>
 </Base>

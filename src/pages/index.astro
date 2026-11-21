@@ -290,13 +290,7 @@ const introParts: { text: string; em: boolean }[] = [];
   const heroBox = document.querySelector('.update');
   const UPDATE_TIME = 750; // میلی‌ثانیه
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const goToServices = () => {
-    document.getElementById('services')?.scrollIntoView({ behavior: 'instant' });
-    history.pushState(null, '', '#services');
-  };
-  heroBtn?.addEventListener('click', (e) => {
-    e.preventDefault();
-    goToServices();
+  heroBtn?.addEventListener('click', () => {
     if (reduceMotion || !heroBox || heroBox.classList.contains('is-updated')) return;
     heroBox.classList.add('is-updating');
     window.setTimeout(() => {

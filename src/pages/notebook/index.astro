@@ -9,7 +9,7 @@ const notes = (await getCollection('notes', (e) => !e.data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const faDate = (d: Date) => new Intl.DateTimeFormat('fa-IR-u-ca-persian', { day: 'numeric', month: 'long', year: 'numeric' }).format(d);
 ---
-<Base title={n.seo.title} description={n.seo.description} header={c.header} bookingHref={c.links.booking} linkedinHref={c.links.linkedin} footer={c.footer}>
+<Base title={n.seo.title} description={n.seo.description} noindex={notes.length === 0} header={c.header} bookingHref={c.links.booking} linkedinHref={c.links.linkedin} footer={c.footer}>
   <section class="notebook" aria-labelledby="notebook-title">
     <div class="wrap">
       <h1 id="notebook-title">{n.title}</h1>

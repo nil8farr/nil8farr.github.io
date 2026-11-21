@@ -1,0 +1,15 @@
+---
+import Base from '../layouts/Base.astro';
+import { frontmatter as c } from '../copy/home.md';
+import { frontmatter as error } from '../copy/404.md';
+
+Astro.response.status = 404;
+---
+<Base title={error.seo.title} description={error.body} noindex header={c.header} bookingHref={c.links.booking} linkedinHref={c.links.linkedin} footer={c.footer}>
+  <section class="wrap" aria-labelledby="not-found-title">
+    <h1 id="not-found-title">{error.title}</h1>
+    <p>{error.body}</p>
+    <a class="btn" href="/">{error.home}</a>
+    <p><a href={c.links.booking} target="_blank" rel="noopener noreferrer">{error.booking}</a></p>
+  </section>
+</Base>

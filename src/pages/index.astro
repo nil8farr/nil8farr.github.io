@@ -3,6 +3,37 @@ import Base from '../layouts/Base.astro';
 // همهٔ متن‌های این صفحه در src/copy/home.md هستند.
 import { frontmatter as c } from '../copy/home.md';
 
+const homeUrl = Astro.site?.href;
+const structuredData = homeUrl && {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': `${homeUrl}#website`,
+      name: c.header.name,
+      url: homeUrl,
+      inLanguage: 'fa',
+      publisher: { '@id': `${homeUrl}#person` },
+    },
+    {
+      '@type': 'Person',
+      '@id': `${homeUrl}#person`,
+      name: c.header.name,
+      jobTitle: c.header.tagline,
+      url: homeUrl,
+      sameAs: [c.links.linkedin].filter(Boolean),
+    },
+    {
+      '@type': 'ProfessionalService',
+      '@id': `${homeUrl}#consulting`,
+      name: c.header.name,
+      description: c.seo.description,
+      url: homeUrl,
+      founder: { '@id': `${homeUrl}#person` },
+    },
+  ],
+};
+
 const toFa = (n: number) => n.toLocaleString('fa-IR');
 const hasNewsletter = Boolean(c.links.newsletter);
 // لینک‌هایی که به بیرون از سایت می‌روند، در صفحهٔ جدید باز می‌شوند.
@@ -43,11 +74,13 @@ const introParts: { text: string; em: boolean }[] = [];
 <Base
   title={c.seo.title}
   description={c.seo.description}
+  ogImage={c.seo.image}
   header={c.header}
   bookingHref={c.links.booking}
   linkedinHref={c.links.linkedin}
   footer={c.footer}
 >
+  <script slot="head" is:inline type="application/ld+json" set:html={structuredData && JSON.stringify(structuredData).replace(/</g, '\\u003c')} />
   <!-- ۰. صفحهٔ شروع: فقط نوار «به‌روزرسانی محصول شما» با سه نقطه، و اسم نیلوفر زیرش. حدود دو ثانیه.
        تصمیم نشان دادنش در public/js/early.js است. -->
   <div class="splash" id="splash" aria-hidden="true">

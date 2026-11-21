@@ -4,6 +4,16 @@ import Base from '../layouts/Base.astro';
 import { frontmatter as c } from '../copy/home.md';
 
 const homeUrl = Astro.site?.href;
+const portrait = homeUrl && c.hero.photo ? new URL(c.hero.photo, homeUrl).href : undefined;
+const serviceImage = homeUrl && c.seo.image ? new URL(c.seo.image, homeUrl).href : portrait;
+const services = c.services.items.map(({ title, tagline }: { title: string; tagline: string }) => ({
+  name: title,
+  description: tagline,
+}));
+if (c.services.optional) {
+  services.push({ name: c.services.optional.title, description: c.services.optional.text });
+}
+
 const structuredData = homeUrl && {
   '@context': 'https://schema.org',
   '@graph': [
@@ -19,9 +29,12 @@ const structuredData = homeUrl && {
       '@type': 'Person',
       '@id': `${homeUrl}#person`,
       name: c.header.name,
+      alternateName: c.seo.alternateNames,
       jobTitle: c.header.tagline,
       url: homeUrl,
-      sameAs: [c.links.linkedin].filter(Boolean),
+      image: portrait,
+      knowsAbout: c.seo.knowsAbout,
+      sameAs: [c.links.linkedin, c.links.telegram].filter(Boolean),
     },
     {
       '@type': 'ProfessionalService',
@@ -29,7 +42,18 @@ const structuredData = homeUrl && {
       name: c.header.name,
       description: c.seo.description,
       url: homeUrl,
+      image: serviceImage,
+      areaServed: { '@type': 'Country', name: 'Iran' },
+      inLanguage: 'fa',
       founder: { '@id': `${homeUrl}#person` },
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: c.services.title,
+        itemListElement: services.map((service: { name: string; description: string }) => ({
+          '@type': 'Offer',
+          itemOffered: { '@type': 'Service', ...service },
+        })),
+      },
     },
   ],
 };

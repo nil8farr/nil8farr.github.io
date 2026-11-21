@@ -64,6 +64,8 @@ const navItems = header.nav
   {socialImage && imageHeight && <meta property="og:image:height" content={imageHeight}>}
   {socialImage && imageAlt && <meta property="og:image:alt" content={imageAlt}>}
   <meta name="twitter:card" content={socialImage ? 'summary_large_image' : 'summary'}>
+  <meta name="twitter:title" content={title}>
+  <meta name="twitter:description" content={description}>
   {socialImage && <meta name="twitter:image" content={socialImage}>}
   <slot name="head" />
   <meta name="theme-color" content="#F6F6F3">

@@ -10,9 +10,20 @@ Astro.response.status = 404;
     <h1 id="not-found-title">{error.title}</h1>
     <p>{error.body}</p>
     <a class="btn" href="/">{error.home}</a>
-    <p><a href={c.links.booking} target="_blank" rel="noopener noreferrer">{error.booking}</a></p>
+    <p class="booking-link"><a href={c.links.booking} target="_blank" rel="noopener noreferrer">{error.booking}</a></p>
     {c.links.telegram && c.cta.fallbackLink && (
       <p>{c.cta.fallbackStart}<a href={c.links.telegram} target="_blank" rel="noopener noreferrer">{c.cta.fallbackLink}</a></p>
     )}
   </section>
 </Base>
+
+<style>
+  .booking-link {
+    margin-block-start: 12px;
+  }
+  .booking-link a {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 44px;
+  }
+</style>

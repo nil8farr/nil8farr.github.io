@@ -7,10 +7,12 @@ import '@fontsource/vazirmatn/700.css';
 import '@fontsource/vazirmatn/800.css';
 import '../styles/global.css';
 import { getCollection } from 'astro:content';
+import { frontmatter as home } from '../copy/home.md';
 
 interface Props {
   title: string;
   description: string;
+  noindex?: boolean;
   header: {
     name: string;
     tagline: string;
@@ -25,7 +27,12 @@ interface Props {
   footer: string;
 }
 
-const { title, description, header, bookingHref, linkedinHref, footer } = Astro.props;
+const { title, description, noindex, header, bookingHref, linkedinHref, footer } = Astro.props;
+const pageUrl = Astro.site && Astro.response.status !== 404
+  ? new URL(Astro.url.pathname, Astro.site).href
+  : undefined;
+const { image, imageAlt, imageWidth, imageHeight } = home.seo;
+const socialImage = image && Astro.site ? new URL(image, Astro.site).href : undefined;
 
 // منو: گزینه‌ای که آدرس ندارد پنهان است. «دفترچه» تا وقتی نوشتهٔ منتشرشده‌ای نیست پنهان می‌ماند.
 // در صفحه‌های دیگر (مثل دفترچه)، لینک‌های «#بخش» به همان بخش در صفحهٔ خانه می‌روند.
@@ -44,12 +51,26 @@ const navItems = header.nav
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>{title}</title>
   <meta name="description" content={description}>
+  {noindex && <meta name="robots" content="noindex">}
+  {!noindex && pageUrl && <link rel="canonical" href={pageUrl}>}
+  {pageUrl && <meta property="og:url" content={pageUrl}>}
   <meta property="og:type" content="website">
   <meta property="og:title" content={title}>
   <meta property="og:description" content={description}>
+  <meta property="og:site_name" content={header.name}>
   <meta property="og:locale" content="fa_IR">
+  {socialImage && <meta property="og:image" content={socialImage}>}
+  {socialImage && imageWidth && <meta property="og:image:width" content={imageWidth}>}
+  {socialImage && imageHeight && <meta property="og:image:height" content={imageHeight}>}
+  {socialImage && imageAlt && <meta property="og:image:alt" content={imageAlt}>}
+  <meta name="twitter:card" content={socialImage ? 'summary_large_image' : 'summary'}>
+  <meta name="twitter:title" content={title}>
+  <meta name="twitter:description" content={description}>
+  {socialImage && <meta name="twitter:image" content={socialImage}>}
+  <slot name="head" />
   <meta name="theme-color" content="#F6F6F3">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <!-- اگر جاوااسکریپت باشد، حرکت‌های صفحه فعال می‌شوند؛ اگر نباشد، همه‌چیز از اول کامل نمایش داده می‌شود. -->
   <script is:inline src="/js/early.js"></script>
 </head>

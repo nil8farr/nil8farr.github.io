@@ -2,8 +2,8 @@ import { appendFile } from 'node:fs/promises';
 import sitemap from '@astrojs/sitemap';
 import { defineConfig } from 'astro/config';
 
-// آدرس سایت. بعد از خرید دامنه، همین‌جا عوض می‌شود.
-const site = 'https://nil8farr.github.io';
+// دامنهٔ اصلی سایت؛ آدرس‌های سئو از همین مقدار ساخته می‌شوند.
+const site = 'https://nil8far.ir';
 let hasPublishedNotes = false;
 
 export default defineConfig({

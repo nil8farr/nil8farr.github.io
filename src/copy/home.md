@@ -37,6 +37,8 @@ header:
   linkedin: "لینکدین"
 
 hero:
+  barLabel: "به‌روزرسانی"
+  barContext: "محصول شما"
   line1: "نسخهٔ جدید محصول شما آماده است."
   line2Start: "همه‌چیز به‌روز شد، "
   line2End: "به‌جز متن‌ها."

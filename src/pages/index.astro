@@ -15,6 +15,13 @@ while (rest) {
 }
 ---
 <Base title={c.seo.title} description={c.seo.description} header={c.header} bookingHref={c.links.booking} linkedinHref={c.links.linkedin} footer={c.footer}>
+  <div class="splash" id="splash" aria-hidden="true">
+    <div class="splash-card">
+      <div class="update-bar"><span class="label">{c.hero.barLabel}</span><span>{c.hero.barContext}</span><span class="dots"><i></i><i></i><i></i></span></div>
+      <div class="splash-progress"><i></i></div>
+    </div>
+    <p class="splash-name">{c.header.name}</p>
+  </div>
   <section class="hero" id="hero" aria-labelledby="hero-title"><div class="wrap">
     <div class="update">
       <div class="update-body"><span class="update-icon" aria-hidden="true">↻</span><div class="hero-body">
@@ -30,7 +37,7 @@ while (rest) {
       <div><p>{c.problem.alertsTitle}<span class="alerts-tag">{c.problem.alertsTag}</span></p><ul class="alerts">{c.problem.symptoms.map((s: string) => <li>{s}</li>)}<li>{c.problem.alertsMore}</li></ul></div>
     </div>
   </div></section>
-  <div class="bridge"><div class="wrap"><p>{c.problem.coreStart}<br /><strong>{c.problem.coreEnd}</strong></p></div></div>
+  <div class="bridge"><div class="wrap"><p>{c.problem.coreStart.split(c.problem.coreStrike)[0]}<span class="core-strike">{c.problem.coreStrike}</span>{c.problem.coreStart.split(c.problem.coreStrike)[1]}<br /><strong>{c.problem.coreEnd.split(c.problem.coreMark)[0]}<mark>{c.problem.coreMark}</mark>{c.problem.coreEnd.split(c.problem.coreMark)[1]}</strong></p></div></div>
   <section id="services" aria-labelledby="services-title"><div class="wrap">
     <h2 id="services-title">{c.services.title}</h2><p class="lead">{c.services.lead}</p>
     <ol class="services-list">{c.services.items.map((item: any, i: number) => (
@@ -56,3 +63,46 @@ while (rest) {
   </div></div></section>
   <aside class="mobile-sticky" aria-label={c.header.button}><span>{c.sticky.prompt}</span><a class="btn" href={c.links.booking} {...ext}>{c.header.button}</a></aside>
 </Base>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const hero = document.querySelector('.update');
+  document.querySelector('.hero-btn')?.addEventListener('click', () => {
+    if (!reduce) hero?.classList.add('is-updated');
+  });
+  if (!reduce && !location.hash && 'IntersectionObserver' in window) {
+    const armed = new Set<HTMLElement>();
+    const timers = new Map<HTMLElement, number>();
+    const reveal = (element: HTMLElement) => {
+      element.classList.remove('motion-armed');
+      element.classList.add('motion-revealed');
+      armed.delete(element);
+      window.clearTimeout(timers.get(element));
+      timers.delete(element);
+    };
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          reveal(entry.target as HTMLElement);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: '0px 0px 200px 0px', threshold: 0 });
+    document.querySelectorAll<HTMLElement>('.alerts li, .bridge, .service-step, .proof-stories li, .confirm').forEach((element) => {
+      if (element.getBoundingClientRect().top < window.innerHeight) return;
+      element.classList.add('motion-armed');
+      armed.add(element);
+      observer.observe(element);
+    });
+    const rescueVisible = () => armed.forEach((element) => {
+      const rect = element.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom > 0 && !timers.has(element)) {
+        timers.set(element, window.setTimeout(() => reveal(element), 1000));
+      }
+    });
+    window.addEventListener('scroll', rescueVisible, { passive: true });
+    window.addEventListener('resize', rescueVisible);
+    window.addEventListener('hashchange', () => armed.forEach(reveal));
+    rescueVisible();
+  }
+</script>

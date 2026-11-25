@@ -24,7 +24,7 @@ while (rest) {
   </div>
   <section class="hero" id="hero" aria-labelledby="hero-title"><div class="wrap">
     <div class="update">
-      <div class="update-body"><span class="update-icon" aria-hidden="true">↻</span><div class="hero-body">
+      <div class="update-body"><span class="update-icon" aria-hidden="true"><svg class="i-refresh" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 4v5h-5"/></svg><svg class="i-check" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><div class="hero-body">
         <h1 id="hero-title">{c.hero.line1}<span class="l2">{c.hero.line2Start}<b class="squiggle">{c.hero.line2End}</b></span></h1>
         <div class="update-actions"><a class="btn hero-btn" href="#services">{c.hero.button}</a></div>
       </div></div>
@@ -41,7 +41,7 @@ while (rest) {
   <section id="services" aria-labelledby="services-title"><div class="wrap">
     <h2 id="services-title">{c.services.title}</h2><p class="lead">{c.services.lead}</p>
     <ol class="services-list">{c.services.items.map((item: any, i: number) => (
-      <li class="service-step"><span class="service-node" aria-hidden="true">{(i + 1).toLocaleString('fa-IR')}</span>
+      <li class="service-step"><span class="service-node" aria-hidden="true"><span class="n">{(i + 1).toLocaleString('fa-IR')}</span><svg class="check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg></span>
         <article class="service-card"><div class="service-summary"><span class="step-label">{c.services.stepLabels[i]}</span><h3>{item.title}</h3>{item.en && <bdi class="en" lang="en">{item.en}</bdi>}<p>{item.tagline}</p></div><ul>{item.includes.map((line: string) => <li>{line}</li>)}</ul></article>
       </li>
     ))}</ol>
@@ -66,43 +66,176 @@ while (rest) {
 
 <script>
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const animate = !reduce && !location.hash && 'IntersectionObserver' in window;
   const hero = document.querySelector('.update');
+  if (animate) hero?.classList.add('is-ready');
   document.querySelector('.hero-btn')?.addEventListener('click', () => {
-    if (!reduce) hero?.classList.add('is-updated');
+    if (!animate || hero?.classList.contains('is-updating')) return;
+    hero?.classList.add('is-updating');
+    window.setTimeout(() => hero?.classList.add('is-updated'), 750);
   });
-  if (!reduce && !location.hash && 'IntersectionObserver' in window) {
-    const armed = new Set<HTMLElement>();
-    const timers = new Map<HTMLElement, number>();
-    const reveal = (element: HTMLElement) => {
-      element.classList.remove('motion-armed');
-      element.classList.add('motion-revealed');
+
+  if (animate) {
+    const armed = new Map<HTMLElement, () => void>();
+    const rescueTimers = new Map<HTMLElement, number>();
+    const observers: IntersectionObserver[] = [];
+    const finish = (element: HTMLElement) => {
+      element.classList.remove('motion-armed', 'motion-queued');
       armed.delete(element);
-      window.clearTimeout(timers.get(element));
-      timers.delete(element);
+      window.clearTimeout(rescueTimers.get(element));
+      rescueTimers.delete(element);
     };
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          reveal(entry.target as HTMLElement);
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { rootMargin: '0px 0px 200px 0px', threshold: 0 });
-    document.querySelectorAll<HTMLElement>('.alerts li, .bridge, .service-step, .proof-stories li, .confirm').forEach((element) => {
-      if (element.getBoundingClientRect().top < window.innerHeight) return;
+    const arm = (element: HTMLElement, final: () => void) => {
+      if (element.getBoundingClientRect().top < window.innerHeight) return false;
       element.classList.add('motion-armed');
-      armed.add(element);
+      armed.set(element, final);
+      return true;
+    };
+    const enqueue = (element: HTMLElement) => {
+      finish(element);
+      element.classList.add('motion-queued');
+    };
+    const watch = (element: HTMLElement, bottom: string, start: () => void) => {
+      const observer = new IntersectionObserver((entries) => {
+        if (entries.some((entry) => entry.isIntersecting || entry.boundingClientRect.bottom < 0)) {
+          start();
+          observer.disconnect();
+        }
+      }, { rootMargin: '0px 0px ' + bottom + ' 0px' });
+      observers.push(observer);
       observer.observe(element);
+    };
+
+    const core = document.querySelector<HTMLElement>('.bridge');
+    if (core && arm(core, () => {
+      finish(core);
+      core.classList.remove('core-pending');
+      core.classList.add('core-final');
+    })) {
+      core.classList.add('core-pending');
+      watch(core, '-50%', () => {
+        if (!armed.has(core)) return;
+        enqueue(core);
+        window.setTimeout(() => {
+          core.classList.add('is-in');
+          finish(core);
+        }, 400);
+      });
+    }
+
+    const scrim = document.querySelector<HTMLElement>('.scrim');
+    if (scrim && arm(scrim, () => {
+      finish(scrim);
+      scrim.classList.remove('dialog-pending');
+      scrim.classList.add('dialog-final');
+    })) {
+      scrim.classList.add('dialog-pending');
+      watch(scrim, '-40%', () => {
+        if (!armed.has(scrim)) return;
+        finish(scrim);
+        scrim.classList.add('is-in');
+      });
+    }
+
+    const alerts = Array.from(document.querySelectorAll<HTMLElement>('.alerts > li'));
+    const pendingAlerts = alerts.filter((row) => arm(row, () => {
+      finish(row);
+      row.classList.add('alert-final');
+    }));
+    const list = document.querySelector<HTMLElement>('.alerts');
+    if (list && pendingAlerts.length) {
+      watch(list, '-50%', () => {
+        const waiting = pendingAlerts.filter((row) => armed.has(row));
+        const gap = Math.min(900, 2700 / Math.max(1, waiting.length - 1));
+        waiting.forEach((row, index) => {
+          enqueue(row);
+          window.setTimeout(() => {
+            finish(row);
+            if (!row.classList.contains('alert-final')) row.classList.add('on');
+          }, index * gap);
+        });
+      });
+    }
+
+    const steps = Array.from(document.querySelectorAll<HTMLElement>('.service-step'));
+    let target = -1;
+    let current = -1;
+    let running = false;
+    const activateNext = () => {
+      if (running || current >= target) return;
+      running = true;
+      const previous = steps[current];
+      current += 1;
+      const step = steps[current];
+      if (previous) {
+        previous.classList.add('is-done');
+        previous.classList.remove('is-active');
+      }
+      window.setTimeout(() => {
+        if (!step.classList.contains('step-final')) step.classList.add('is-active');
+        finish(step);
+        window.setTimeout(() => {
+          if (current === steps.length - 1) {
+            step.classList.add('is-done');
+            step.classList.remove('is-active');
+          }
+          running = false;
+          activateNext();
+        }, 1300);
+      }, previous ? 500 : 0);
+    };
+    steps.forEach((step, index) => {
+      if (!arm(step, () => {
+        finish(step);
+        step.classList.remove('step-pending', 'is-active');
+        step.classList.add('step-final', 'is-done');
+      })) return;
+      step.classList.add('step-pending');
+      watch(step, '-35%', () => {
+        if (!armed.has(step)) return;
+        for (let i = 0; i <= index; i += 1) {
+          if (armed.has(steps[i])) enqueue(steps[i]);
+        }
+        target = Math.max(target, index);
+        activateNext();
+      });
     });
-    const rescueVisible = () => armed.forEach((element) => {
+
+    document.querySelectorAll<HTMLElement>('.proof-stories li').forEach((element) => {
+      const reveal = () => {
+        finish(element);
+        element.classList.add('motion-revealed');
+      };
+      if (arm(element, reveal)) watch(element, '200px', reveal);
+    });
+
+    const rescueVisible = () => armed.forEach((final, element) => {
       const rect = element.getBoundingClientRect();
-      if (rect.top < window.innerHeight && rect.bottom > 0 && !timers.has(element)) {
-        timers.set(element, window.setTimeout(() => reveal(element), 1000));
+      if (rect.top < window.innerHeight && rect.bottom > 0 && !rescueTimers.has(element)) {
+        rescueTimers.set(element, window.setTimeout(final, 1000));
       }
     });
     window.addEventListener('scroll', rescueVisible, { passive: true });
     window.addEventListener('resize', rescueVisible);
-    window.addEventListener('hashchange', () => armed.forEach(reveal));
+    window.addEventListener('hashchange', () => {
+      armed.forEach((final, element) => {
+        if (element.getBoundingClientRect().top < window.innerHeight) final();
+      });
+      document.querySelectorAll<HTMLElement>('.motion-queued').forEach((element) => {
+        if (element.getBoundingClientRect().top >= window.innerHeight) return;
+        finish(element);
+        if (element.matches('.alerts > li')) element.classList.add('alert-final');
+        if (element.matches('.service-step')) element.classList.add('step-final', 'is-done');
+        if (element.matches('.bridge')) {
+          element.classList.remove('core-pending');
+          element.classList.add('core-final');
+        }
+      });
+    });
     rescueVisible();
+    window.addEventListener('pagehide', () => {
+      observers.forEach((observer) => observer.disconnect());
+      rescueTimers.forEach((timer) => window.clearTimeout(timer));
+    }, { once: true });
   }
 </script>

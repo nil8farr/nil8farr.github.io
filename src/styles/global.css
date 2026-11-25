@@ -125,27 +125,52 @@ html.splash-on .splash { position: fixed; inset: 0; z-index: 100; background: va
 .splash-progress i { display: block; height: 100%; background: var(--second); transform-origin: right; animation: line-fill .15s ease-out; }
 .splash-name { margin: 0; font-size: 13px; font-weight: 700; color: var(--muted); }
 html.splash-out .splash { opacity: 0; transition: opacity .15s ease; }
-.motion-armed { opacity: .65; transform: translateY(12px); }
-.motion-revealed { animation: scroll-in .3s ease-out both; }
-.confirm.motion-armed { transform: scale(.97); }
-.confirm.motion-revealed { animation-name: confirm-in; }
+html.js .alerts > li:is(.motion-armed, .motion-queued),
+html.js .proof-stories li.motion-armed { opacity: .65; transform: translateY(12px); }
+html.js .alerts > li.on, .motion-revealed { animation: scroll-in .3s ease-out both; }
 .bridge .core-strike { position: relative; }
 .core-strike::after { content: ""; position: absolute; top: 52%; inset-inline: 0; height: 2px; background: var(--second); transform-origin: right; }
-.bridge mark { color: var(--second); background: var(--surface); padding: 0 .2em; border-radius: 6px; }
-.bridge.motion-armed .core-strike::after { transform: scaleX(0); }
-.bridge.motion-revealed .core-strike::after { animation: line-fill .35s ease-out; }
-.service-step.motion-revealed .service-node { animation: node-in .35s ease-out; }
-.service-step.motion-revealed::before { transform-origin: top; animation: line-fill-y .35s ease-out; }
+.core-strike::before { content: ""; position: absolute; inset: -2px -4px; border-radius: 6px; background: rgba(43, 45, 49, .14); transform-origin: right; transform: scaleX(0); opacity: 0; }
+.bridge mark { color: var(--second); background: linear-gradient(var(--surface), var(--surface)) no-repeat right / 100% 100%; padding: 0 .2em; border-radius: 6px; }
+html.js .bridge.core-pending:not(.is-in) .core-strike::after { transform: scaleX(0); }
+html.js .bridge.core-pending:not(.is-in) mark { background-size: 0% 100%; }
+html.js .bridge.core-pending.is-in:not(.core-final) .core-strike::before { animation: select 1.8s ease-out forwards; }
+html.js .bridge.core-pending.is-in:not(.core-final) .core-strike::after { animation: line-fill .7s ease-out .7s both; }
+html.js .bridge.core-pending.is-in:not(.core-final) mark { animation: highlight .9s ease-out 2s both; }
+.scrim { background: rgba(28, 29, 31, .12); transition: background .12s ease; }
+html.js .scrim.dialog-pending:not(.is-in) { background: transparent; }
+html.js .scrim.dialog-pending:not(.is-in) .confirm { opacity: .65; transform: scale(.7); }
+html.js .scrim.is-in { background: rgba(28, 29, 31, .12); }
+html.js .scrim.is-in .confirm { animation: pop .34s cubic-bezier(.34, 1.7, .5, 1) both; }
+.service-node { background: var(--second); color: var(--surface); transition: background .3s ease, color .3s ease, box-shadow .3s ease; }
+.service-node > * { grid-area: 1 / 1; }
+.service-node .n { display: none; }
+.service-node .check { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; transition: transform .3s cubic-bezier(.3, 1.6, .5, 1); }
+.service-step:not(:last-child)::after { content: ""; position: absolute; right: 23px; top: 65px; bottom: -24px; width: 1px; background: var(--second); transform-origin: top; transition: transform .5s ease-in-out; }
+html.js .service-step.step-pending:not(.is-done):not(.step-final)::after { transform: scaleY(0); }
+html.js .service-step.step-pending:not(.is-done):not(.step-final) .service-node { background: var(--surface); color: var(--muted); box-shadow: inset 0 0 0 2px var(--line); }
+html.js .service-step.step-pending:not(.is-done):not(.step-final) .n { display: block; }
+html.js .service-step.step-pending:not(.is-done):not(.step-final) .check { visibility: hidden; transform: scale(.5); }
+html.js .service-step.step-pending.is-active:not(.is-done):not(.step-final) .service-node { background: var(--second-soft); color: var(--second); box-shadow: inset 0 0 0 2px var(--second); animation: pulse 1s ease-out; }
 .update { position: relative; }
-.update::after { content: ""; position: absolute; inset: auto 0 0; height: 3px; background: var(--second); transform: scaleX(0); transform-origin: right; }
-.update.is-updated::after { transform: scaleX(1); animation: line-fill .35s ease-out; }
-.update.is-updated .update-icon { animation: refresh-turn .35s ease-out; }
+.update::after { content: ""; position: absolute; inset: auto 0 0; height: 3px; background: var(--second); transform-origin: right; }
+.update-icon { transition: background .3s ease, color .3s ease; }
+.update-icon > svg { grid-area: 1 / 1; }
+.update-icon .i-refresh { visibility: hidden; }
+.update:not(.is-ready) .update-icon, .update.is-updated .update-icon { background: var(--second-soft); color: var(--second); }
+html.js .update.is-ready:not(.is-updated)::after { transform: scaleX(0); }
+html.js .update.is-ready:not(.is-updated) .i-refresh { visibility: visible; }
+html.js .update.is-ready:not(.is-updated) .i-check { visibility: hidden; transform: scale(.5); }
+.update-icon .i-check { transition: transform .3s cubic-bezier(.3, 1.6, .5, 1); }
+html.js .update.is-updating:not(.is-updated) .i-refresh { animation: spin .75s cubic-bezier(.4, 0, .2, 1); }
+html.js .update.is-updating:not(.is-updated)::after { animation: line-fill .75s cubic-bezier(.4, 0, .2, 1) forwards; }
 @keyframes scroll-in { from { opacity: .65; transform: translateY(12px); } to { opacity: 1; transform: none; } }
-@keyframes confirm-in { from { opacity: .65; transform: scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes pop { from { opacity: .65; transform: scale(.7); } 40% { opacity: 1; } to { opacity: 1; transform: none; } }
+@keyframes select { 0% { transform: scaleX(0); opacity: 1; } 33%, 75% { transform: scaleX(1); opacity: 1; } 100% { transform: scaleX(1); opacity: 0; } }
+@keyframes highlight { from { background-size: 0% 100%; } to { background-size: 100% 100%; } }
 @keyframes line-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-@keyframes line-fill-y { from { transform: scaleY(0); } to { transform: scaleY(1); } }
-@keyframes node-in { 50% { transform: scale(1.1); } }
-@keyframes refresh-turn { to { transform: rotate(360deg); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pulse { from { box-shadow: inset 0 0 0 2px var(--second), 0 0 0 0 rgba(43, 45, 49, .25); } to { box-shadow: inset 0 0 0 2px var(--second), 0 0 0 12px rgba(43, 45, 49, 0); } }
 @keyframes splash-dot { 50% { transform: scale(1.2); } }
 @media (max-width: 820px) {
   body { font-size: 16px; }
@@ -179,7 +204,7 @@ html.splash-out .splash { opacity: 0; transition: opacity .15s ease; }
   .bridge { font-size: 23px; padding: 32px 0; }
   .lead { line-height: 2; margin-bottom: 28px; }
   .service-step { padding: 0; margin-bottom: 16px; }
-  .service-node, .service-step::before { display: none; }
+  .service-node, .service-step::before, .service-step::after { display: none; }
   .service-card { display: block; padding: 26px 20px; }
   .service-summary p { line-height: 2; margin: 20px 0 24px; }
   .service-card h3 { font-size: 21px; }
@@ -205,7 +230,18 @@ html.splash-out .splash { opacity: 0; transition: opacity .15s ease; }
   .contact li:first-child a { width: fit-content; margin: auto; }
   .mobile-sticky { position: fixed; inset: auto 0 0; z-index: 10; min-height: var(--sticky-height); display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); background: var(--bg); border-top: 1px solid var(--line); font-size: 14px; }
 }
-@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } .motion-armed { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .alerts > li, .proof-stories li, .confirm { opacity: 1 !important; transform: none !important; }
+  .core-strike::after, .service-step::after, .update::after { transform: none !important; }
+  .bridge mark { background-size: 100% 100% !important; }
+  .scrim { background: rgba(28, 29, 31, .12) !important; }
+  .service-node { background: var(--second) !important; color: var(--surface) !important; box-shadow: none !important; }
+  .update .update-icon { background: var(--second-soft) !important; color: var(--second) !important; }
+  .service-node .n { display: none !important; }
+  .service-node .check, .update .i-check { visibility: visible !important; transform: none !important; }
+  .update .i-refresh { visibility: hidden !important; }
+}
 /* ───────── دفترچه ───────── */
 .notebook, .note { padding: 56px 0 72px; }
 .notebook h1, .note h1 { font-size: clamp(30px, 4vw, 42px); font-weight: 800; margin: 0 0 8px; line-height: 1.5; }

@@ -6,7 +6,7 @@ const ext = { target: '_blank', rel: 'noopener noreferrer' };
 const introParts: { text: string; em: boolean }[] = [];
 let rest: string = c.hero.intro;
 while (rest) {
-  const hits = (c.hero.introEmphasis as string[]).map((e) => ({ e, i: rest.indexOf(e) })).filter((h) => h.i >= 0).sort((a, b) => a.i - b.i);
+  const hits = ((c.hero.introEmphasis ?? []) as string[]).map((e) => ({ e, i: rest.indexOf(e) })).filter((h) => h.i >= 0).sort((a, b) => a.i - b.i);
   if (!hits.length) { introParts.push({ text: rest, em: false }); break; }
   const { e, i } = hits[0];
   if (i > 0) introParts.push({ text: rest.slice(0, i), em: false });

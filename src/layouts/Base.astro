@@ -50,7 +50,6 @@ const navItems = header.nav
   <meta property="og:locale" content="fa_IR">
   <meta name="theme-color" content="#F6F6F3">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <!-- اگر جاوااسکریپت باشد، حرکت‌های صفحه فعال می‌شوند؛ اگر نباشد، همه‌چیز از اول کامل نمایش داده می‌شود. -->
   <script is:inline src="/js/early.js"></script>
 </head>
 <body>
@@ -59,6 +58,7 @@ const navItems = header.nav
   <header class="site-header">
     <div class="wrap">
       <a class="brand" href="/">{header.name}<small>{header.tagline}</small></a>
+      <a class="btn mobile-booking" href={bookingHref} target="_blank" rel="noopener noreferrer">{header.button}</a>
       <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav"
         data-open={header.menuClose} data-closed={header.menu}>{header.menu}</button>
       <nav class="site-nav" id="site-nav" aria-label="منوی اصلی">

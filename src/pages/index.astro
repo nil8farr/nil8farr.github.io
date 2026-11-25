@@ -1,430 +1,59 @@
 ---
 import Base from '../layouts/Base.astro';
-// همهٔ متن‌های این صفحه در src/copy/home.md هستند.
 import { frontmatter as c } from '../copy/home.md';
 
-const toFa = (n: number) => n.toLocaleString('fa-IR');
-const hasNewsletter = Boolean(c.links.newsletter);
-// لینک‌هایی که به بیرون از سایت می‌روند، در صفحهٔ جدید باز می‌شوند.
-const ext = (href: string) => (href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {});
-// آیکون راه‌های تماس
-const icons: Record<string, string> = {
-  email: '<path d="M4 6h16v12H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 7l8 6 8-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>',
-  telegram: '<path d="M21 4.5L3 11.4l5.6 2 2.1 6.1 3.1-3.6 4.8 3.6L21 4.5z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8.6 13.4L18 7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
-  linkedin: '<path fill="currentColor" d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45Z"/>',
-};
-
-// یک عبارت را داخل متن پیدا می‌کند و متن را به سه تکه (قبل، خود عبارت، بعد) می‌شکند.
-const around = (text: string, phrase?: string) => {
-  const i = phrase ? text.indexOf(phrase) : -1;
-  if (i < 0) return [{ text, hit: false }];
-  return [
-    { text: text.slice(0, i), hit: false },
-    { text: phrase as string, hit: true },
-    { text: text.slice(i + (phrase as string).length), hit: false },
-  ].filter((p) => p.text);
-};
-
-// متن معرفی را تکه‌تکه می‌کند تا عبارت‌های introEmphasis پررنگ شوند.
+const ext = { target: '_blank', rel: 'noopener noreferrer' };
 const introParts: { text: string; em: boolean }[] = [];
-{
-  const ems: string[] = c.hero.introEmphasis ?? [];
-  let rest: string = c.hero.intro;
-  while (rest) {
-    const hits = ems.map((e) => ({ e, i: rest.indexOf(e) })).filter((h) => h.i >= 0).sort((a, b) => a.i - b.i);
-    if (!hits.length) { introParts.push({ text: rest, em: false }); break; }
-    const { e, i } = hits[0];
-    if (i > 0) introParts.push({ text: rest.slice(0, i), em: false });
-    introParts.push({ text: e, em: true });
-    rest = rest.slice(i + e.length);
-  }
+let rest: string = c.hero.intro;
+while (rest) {
+  const hits = (c.hero.introEmphasis as string[]).map((e) => ({ e, i: rest.indexOf(e) })).filter((h) => h.i >= 0).sort((a, b) => a.i - b.i);
+  if (!hits.length) { introParts.push({ text: rest, em: false }); break; }
+  const { e, i } = hits[0];
+  if (i > 0) introParts.push({ text: rest.slice(0, i), em: false });
+  introParts.push({ text: e, em: true });
+  rest = rest.slice(i + e.length);
 }
 ---
-<Base
-  title={c.seo.title}
-  description={c.seo.description}
-  header={c.header}
-  bookingHref={c.links.booking}
-  linkedinHref={c.links.linkedin}
-  footer={c.footer}
->
-  <!-- ۰. صفحهٔ شروع: فقط نوار «به‌روزرسانی محصول شما» با سه نقطه، و اسم نیلوفر زیرش. حدود دو ثانیه.
-       تصمیم نشان دادنش در public/js/early.js است. -->
-  <div class="splash" id="splash" aria-hidden="true">
-    <div class="splash-card">
-      <div class="update-bar">
-        <span class="label">{c.hero.barLabel}</span>
-        <span>{c.hero.barContext}</span>
-        <span class="dots"><i></i><i></i><i></i></span>
-      </div>
-      <div class="splash-progress"><i></i></div>
+<Base title={c.seo.title} description={c.seo.description} header={c.header} bookingHref={c.links.booking} linkedinHref={c.links.linkedin} footer={c.footer}>
+  <section class="hero" id="hero" aria-labelledby="hero-title"><div class="wrap">
+    <div class="update">
+      <div class="update-bar"><span>{c.hero.barLabel} · {c.hero.barContext}</span><span class="dots" aria-hidden="true">•••</span></div>
+      <div class="update-body"><span class="update-icon" aria-hidden="true">↻</span><div class="hero-body">
+        <h1 id="hero-title">{c.hero.line1}<span class="l2">{c.hero.line2Start}<b class="squiggle">{c.hero.line2End}</b></span></h1>
+        <div class="update-actions"><a class="btn hero-btn" href="#services">{c.hero.button}</a><a class="hero-secondary" href={c.links.booking} {...ext}>{c.hero.secondary}</a></div>
+      </div></div>
     </div>
-    <p class="splash-name">{c.header.name}</p>
-  </div>
-
-  <!-- ۱. تیتر اصلی: شکل هشدار به‌روزرسانی -->
-  <section class="hero" aria-labelledby="hero-title">
-    <div class="wrap">
-      <!-- نوار «به‌روزرسانی محصول شما» فقط در صفحهٔ شروع است، نه این‌جا. -->
-      <div class="update">
-        <div class="update-body">
-          <div class="update-icon" aria-hidden="true">
-            <svg class="i-refresh" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 4v5h-5"/></svg>
-            <svg class="i-check" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
-          </div>
-          <div>
-            <h1 id="hero-title">
-              {c.hero.line1}
-              <span class="l2">{c.hero.line2Start}<b class="squiggle">{c.hero.line2End}</b></span>
-            </h1>
-            <div class="update-actions">
-              <a class="btn hero-btn" href="#services">{c.hero.button}</a>
-            </div>
-          </div>
-        </div>
-        <!-- نوار پیشرفت: با زدن دکمه پر می‌شود -->
-        <div class="update-progress" aria-hidden="true"><i></i></div>
-      </div>
-      <div class="intro">
-        {c.hero.photo && <img class="intro-photo" src={c.hero.photo} alt="" width="600" height="600" decoding="async" />}
-        <p>{introParts.map((p) => p.em ? <strong>{p.text}</strong> : p.text)}</p>
-      </div>
+    <div class="intro">{c.hero.photo && <img src={c.hero.photo} alt="" width="64" height="64" />}<p>{introParts.map((p) => p.em ? <strong>{p.text}</strong> : p.text)}</p></div>
+  </div></section>
+  <section class="problem" aria-labelledby="problem-title"><div class="wrap">
+    <h2 id="problem-title">{c.problem.title}</h2><div class="two-col">
+      <div>{c.problem.story.map((line: string) => <p>{line}</p>)}</div>
+      <div><p>{c.problem.alertsTitle}<span class="alerts-tag">{c.problem.alertsTag}</span></p><ul class="alerts">{c.problem.symptoms.map((s: string) => <li>{s}</li>)}<li>{c.problem.alertsMore}</li></ul></div>
     </div>
-  </section>
-
-  <!-- ۲. مسئله -->
-  <section aria-labelledby="problem-title">
-    <div class="wrap">
-      <div>
-        <!-- تیتر بالای هر دو ستون. ستون راست: داستان. ستون چپ: از جملهٔ «کم‌کم…» شروع می‌شود و هم‌تراز خط اول داستان است، پس چشم بعد از داستان طبیعی به ستون بعد می‌رود. -->
-        <h2 id="problem-title">{c.problem.title}</h2>
-        <div class="two-col">
-          <div class="two-story">
-            {c.problem.story.map((line: string) => <p>{line}</p>)}
-          </div>
-          <div class="two-alerts">
-            <p class="two-lead">{c.problem.alertsTitle}{c.problem.alertsTag && <span class="alerts-tag">{c.problem.alertsTag}</span>}</p>
-            <ul class="alerts symptoms">
-              {c.problem.symptoms.map((s: string) => <li>{s}</li>)}
-              {c.problem.alertsMore && <li class="more">{c.problem.alertsMore}</li>}
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- پل بین مسئله و خدمات: نوار تمام‌عرض خاکستری کم‌رنگ با جملهٔ محوری. لبهٔ پایینش به بخش خدمات اشاره می‌کند. -->
-  <div class="bridge">
-    <div class="wrap">
-      <p class="core">
-        <span class="l1">{around(c.problem.coreStart, c.problem.coreStrike).map((p) => p.hit ? <span class="strike">{p.text}</span> : p.text)}</span>
-        <span class="l2">{around(c.problem.coreEnd, c.problem.coreMark).map((p) => p.hit ? <mark>{p.text}</mark> : p.text)}</span>
-      </p>
-    </div>
-  </div>
-
-  <!-- ۳. خدمات -->
-  <section id="services" aria-labelledby="services-title">
-    <div class="wrap">
-      <h2 id="services-title">{c.services.title}</h2>
-      <p class="lead">{c.services.lead}</p>
-      <!-- نوار پیشرفت به‌روزرسانی: هر قدم با اسکرول از «در انتظار» به «در حال انجام» و بعد «انجام شد» می‌رود. -->
-      <ol class="progress">
-        {c.services.items.map((item: any, i: number) => (
-          <li class="p-step">
-            <span class="node" aria-hidden="true">
-              <span class="n">{toFa(i + 1)}</span>
-              <svg class="check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
-            </span>
-            <div class="card">
-              <div class="card-head">
-                <h3>
-                  {item.title}
-                  {item.en && <span class="en"><bdi dir="ltr" lang="en">{item.en}</bdi></span>}
-                </h3>
-                <span class="status" aria-hidden="true">
-                  <span class="s-pending">{c.services.progress.pending}</span>
-                  <span class="s-active">{c.services.progress.active}</span>
-                  <span class="s-done">{c.services.progress.done}</span>
-                </span>
-              </div>
-              <div class="card-more">
-                <div>
-                  <p class="tag">{item.tagline}</p>
-                  <div class="out">
-                    <ul>{item.includes.map((x: string) => <li>{x}</li>)}</ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </li>
-        ))}
-        <!-- گزینهٔ اختیاری: یک قدم دیگر روی همان نوار، با دایرهٔ خط‌چین و علامت + -->
-        <li class="p-step p-optional">
-          <span class="node" aria-hidden="true">
-            <svg class="plus" viewBox="0 0 24 24"><path d="M12 6v12M6 12h12" /></svg>
-            <svg class="check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
-          </span>
-          <div class="card">
-            <div class="card-head">
-              <h3>{c.services.optional.title}</h3>
-              <span class="badge">{c.services.optional.badge}</span>
-            </div>
-            <div class="card-more">
-              <div>
-                <p class="tag">{c.services.optional.text}</p>
-                <div class="out">
-                  <ul>{c.services.optional.items.map((x: string) => <li>{x}</li>)}</ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </li>
-        <!-- پایان نوار: «به‌روزرسانی آماده است» و دکمهٔ رزرو کنار هم -->
-        <li class="p-step p-final">
-          <span class="node" aria-hidden="true">
-            <svg class="check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
-          </span>
-          <div class="final-row">
-            <p class="ready">{c.services.progress.ready}</p>
-            <a class="btn" href={c.links.booking} {...ext(c.links.booking)}>{c.services.button}</a>
-          </div>
-        </li>
-      </ol>
-    </div>
-  </section>
-
-  <!-- ۴. چرا من -->
-  <section id="why" aria-labelledby="why-title">
-    <div class="wrap">
-      <!-- دو ستون: متن (تیتر، عددها، مراحل) و عکس پشت میز کار. اگر عکس خالی باشد، فقط ستون متن می‌ماند. -->
-      <div class:list={['why-grid', { 'has-photo': c.why.photo }]}>
-        <div class="why-body">
-          <h2 id="why-title">{c.why.title}</h2>
-          <dl class="stats">
-            {c.why.stats.map((s: any) => <div><dt>{s.value}</dt><dd>{s.label}</dd></div>)}
-          </dl>
-          <ol class="steps">
-            {c.why.steps.map((s: any, i: number) => (
-              <li class="step">
-                <div class="dot" aria-hidden="true">{toFa(i + 1)}</div>
-                <div>
-                  <h3>{s.title}</h3>
-                  <p>{s.text}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
-        {c.why.photo && (
-          <img class="why-photo" src={c.why.photo} alt={c.why.photoAlt} width="720" height="900" loading="lazy" decoding="async" />
-        )}
-      </div>
-      <!-- قول آخر بخش: شکل پیام «انجام شد» در رابط کاربری، هم‌خانواده با تیک‌های نوار پیشرفت. -->
-      <p class="promise">
-        <span class="promise-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg></span>
-        <span>{c.why.promise}</span>
-      </p>
-      {c.why.testimonials.length > 0 && (
-        <div class="testimonials">
-          {c.why.testimonials.map((t: any) => (
-            <figure class="testimonial">
-              <blockquote>«{t.quote}»</blockquote>
-              <figcaption>{t.name}، {t.role}</figcaption>
-            </figure>
-          ))}
-        </div>
-      )}
-    </div>
-  </section>
-
-  <!-- ۵. دعوت: شکل پنجرهٔ بازشوی تأیید روی یک پس‌زمینهٔ کدر.
-       فقط ظاهرش پنجرهٔ بازشوست: در کد یک بخش معمولی است، جلوی چیزی را نمی‌گیرد و خودبه‌خود باز نمی‌شود.
-       وقتی به دید می‌رسد، یک بار با حرکت کوچک «باز» می‌شود. -->
-  <section class="cta" id="contact" aria-labelledby="cta-title">
-    <div class="wrap">
-      <div class="scrim">
-        <div class="confirm">
-          <div class="confirm-body">
-            <h2 id="cta-title">{c.cta.title}</h2>
-            <p>{c.cta.text}</p>
-            <div class="actions">
-              <a class="btn" href={c.links.booking} {...ext(c.links.booking)}>{c.cta.primary}</a>
-              {hasNewsletter && <a class="btn ghost" href={c.links.newsletter}>{c.cta.secondary}</a>}
-            </div>
-            {c.links.telegram && c.cta.fallbackLink && (
-              <p class="fallback">{c.cta.fallbackStart}<a href={c.links.telegram} {...ext(c.links.telegram)}>{c.cta.fallbackLink}</a></p>
-            )}
-          </div>
-        </div>
-        {c.cta.contact.length > 0 && (
-          <div class="contact">
-            <p class="contact-title">{c.cta.contactTitle}</p>
-            <ul>
-              {c.cta.contact.map((x: any) => (
-                <li>
-                  <a href={x.href} {...ext(x.href)}>
-                    {x.icon && icons[x.icon] && <svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[x.icon]} />}
-                    {x.href.startsWith('mailto:') ? <bdi dir="ltr">{x.label}</bdi> : x.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
-    </div>
-  </section>
+  </div></section>
+  <div class="bridge"><div class="wrap"><p>{c.problem.coreStart}<br /><strong>{c.problem.coreEnd}</strong></p></div></div>
+  <section id="services" aria-labelledby="services-title"><div class="wrap">
+    <h2 id="services-title">{c.services.title}</h2><p class="lead">{c.services.lead}</p>
+    <ol class="services-list">{c.services.items.map((item: any, i: number) => (
+      <li class="service-step"><span class="service-node" aria-hidden="true">{(i + 1).toLocaleString('fa-IR')}</span>
+        <article class="service-card"><div class="service-summary"><span class="step-label">{c.services.stepLabels[i]}</span><h3>{item.title}</h3>{item.en && <bdi class="en" lang="en">{item.en}</bdi>}<p>{item.tagline}</p></div><ul>{item.includes.map((line: string) => <li>{line}</li>)}</ul></article>
+      </li>
+    ))}</ol>
+    <div class="services-booking"><a class="btn" href={c.links.booking} {...ext}>{c.services.button}</a>{c.links.telegram && <p class="fallback">{c.services.fallbackStart}<a href={c.links.telegram} {...ext}>{c.cta.fallbackLink}</a></p>}</div>
+  </div></section>
+  <section id="why" aria-labelledby="why-title"><div class="wrap">
+    <div class="proof-heading"><h2 id="why-title">{c.why.title}</h2><dl class="stats">{c.why.stats.map((s: any) => <div><dt>{s.value}</dt><dd>{s.label}</dd></div>)}</dl></div>
+    <ol class="proof-stories">{c.why.steps.map((s: any) => <li><h3>{s.title}</h3><p>{s.text}</p></li>)}</ol>
+    <p class="promise">{c.why.promise}</p>
+    {c.why.testimonials.length > 0 && <div class="testimonials">{c.why.testimonials.map((t: any) => <figure><blockquote>{t.quote}</blockquote><figcaption>{t.name}، {t.role}</figcaption></figure>)}</div>}
+  </div></section>
+  <section id="faq" aria-labelledby="faq-title"><div class="wrap faq-grid">
+    <div class="faq-heading"><p class="eyebrow">{c.faq.eyebrow}</p><h2 id="faq-title">{c.faq.title}</h2></div>
+    <div class="faq-list">{c.faq.items.map((item: any, i: number) => <details open={i === 0}><summary>{item.question}</summary><p>{item.answer}</p></details>)}</div>
+  </div></section>
+  <section class="cta" id="contact" aria-labelledby="cta-title"><div class="wrap"><div class="scrim">
+    <div class="confirm"><h2 id="cta-title">{c.cta.title}</h2><p>{c.cta.text}</p><div class="actions"><a class="btn" href={c.links.booking} {...ext}>{c.cta.primary}</a>{c.links.newsletter && <a class="btn ghost" href={c.links.newsletter} {...ext}>{c.cta.secondary}</a>}</div></div>
+    {c.cta.contact.length > 0 && <ul class="contact">{c.cta.contact.map((x: any) => <li><a href={x.href} {...ext}><span aria-hidden="true">{x.icon === 'email' ? '✉' : x.icon === 'telegram' ? '↗' : 'in'}</span><bdi>{x.label}</bdi></a></li>)}</ul>}
+  </div></div></section>
+  <aside class="mobile-sticky" aria-label={c.header.button}><span>{c.sticky.prompt}</span><a class="btn" href={c.links.booking} {...ext}>{c.header.button}</a></aside>
 </Base>
-
-<script>
-  // صفحهٔ شروع: نوار به‌روزرسانی پر می‌شود و کنار می‌رود. با کلیک یا Esc زودتر کنار می‌رود.
-  const SPLASH_TIME = 1800; // میلی‌ثانیه تا شروع کنار رفتن
-  const SPLASH_FADE = 400;
-  const rootEl = document.documentElement;
-  if (rootEl.classList.contains('splash-on')) {
-    try { sessionStorage.setItem('splashSeen', '1'); } catch (e) {}
-    let closed = false;
-    const closeSplash = () => {
-      if (closed) return;
-      closed = true;
-      rootEl.classList.add('splash-out');
-      window.setTimeout(() => rootEl.classList.remove('splash-on', 'splash-out'), SPLASH_FADE);
-    };
-    window.setTimeout(closeSplash, SPLASH_TIME);
-    document.getElementById('splash')?.addEventListener('click', closeSplash);
-    window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSplash(); });
-  }
-
-  // تیتر: با زدن «به‌روزرسانی متن‌ها» یک به‌روزرسانی کوتاه در خود قاب اجرا می‌شود:
-  // آیکون می‌چرخد، نوار پیشرفت پایین قاب پر می‌شود و آیکون تیک نیلی می‌شود. بعد صفحه نرم به بخش خدمات می‌رود.
-  const heroBtn = document.querySelector('.hero-btn');
-  const heroBox = document.querySelector('.update');
-  const UPDATE_TIME = 750; // میلی‌ثانیه
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const goToServices = () => {
-    document.getElementById('services')?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
-    history.pushState(null, '', '#services');
-  };
-  heroBtn?.addEventListener('click', (e) => {
-    if (reduceMotion || !heroBox) return;
-    e.preventDefault();
-    if (heroBox.classList.contains('is-updated')) { goToServices(); return; }
-    heroBox.classList.add('is-updating');
-    window.setTimeout(() => {
-      heroBox.classList.add('is-updated');
-      window.setTimeout(goToServices, 200);
-    }, UPDATE_TIME);
-  });
-
-  // بخش مسئله: هر هشدار با اسکرول خودِ خواننده ظاهر می‌شود، نه با زمان‌سنج.
-  // هر ردیف وقتی به وسط صفحه برسد پیدا می‌شود؛ پس هشدارها هم‌پای اسکرول، یکی‌یکی می‌آیند.
-  const SCROLL_START = 80; // پیش از این مقدار اسکرول، هیچ هشداری نمی‌آید
-  const alertsBox = document.querySelector('.alerts');
-  if (alertsBox) {
-    const rows = Array.from(alertsBox.querySelectorAll<HTMLElement>(':scope > li'));
-    const showAll = () => rows.forEach((r) => r.classList.add('on'));
-    if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      showAll();
-    } else {
-      const ALERT_GAP = 900; // کمترین فاصلهٔ آمدن دو هشدار (میلی‌ثانیه)
-      let nextAt = 0;
-      const waiting = new Set<HTMLElement>();
-      const flush = () => {
-        if (window.scrollY <= SCROLL_START) return;
-        // هر هشدار دست‌کم ALERT_GAP بعد از قبلی می‌آید، حتی اگر خواننده تند اسکرول کند.
-        rows.filter((r) => waiting.has(r)).forEach((r) => {
-          waiting.delete(r);
-          ro.unobserve(r);
-          const at = Math.max(Date.now(), nextAt);
-          nextAt = at + ALERT_GAP;
-          setTimeout(() => r.classList.add('on'), at - Date.now());
-        });
-      };
-      const ro = new IntersectionObserver((entries) => {
-        // ردیفی که به وسط صفحه رسیده، یا خواننده با اسکرول تند از آن رد شده (بالای صفحه است)، در صف می‌رود.
-        entries.forEach((e) => { if (e.isIntersecting || e.boundingClientRect.top < 0) waiting.add(e.target as HTMLElement); });
-        flush();
-      }, { rootMargin: '0px 0px -50% 0px' }); // یعنی وقتی ردیف به وسط صفحه رسید
-      rows.forEach((r) => ro.observe(r));
-      window.addEventListener('scroll', flush, { passive: true });
-    }
-  }
-
-  // جملهٔ محوری: وقتی به وسط صفحه می‌رسد و خواننده فرصت کرده جمله را بخواند،
-  // «نوشتن» مثل ویرایشگر متن انتخاب می‌شود و خط می‌خورد، بعد «سیستم» هایلایت می‌شود.
-  const CORE_READ_TIME = 400; // مکث پیش از شروع (میلی‌ثانیه)، تا اول خود جمله خوانده شود
-  const core = document.querySelector('.core');
-  if (core) {
-    if (!('IntersectionObserver' in window)) {
-      core.classList.add('is-in');
-    } else {
-      const co = new IntersectionObserver((entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          setTimeout(() => core.classList.add('is-in'), CORE_READ_TIME);
-          co.disconnect();
-        }
-      }, { rootMargin: '0px 0px -50% 0px' });
-      co.observe(core);
-    }
-  }
-
-  // پنجرهٔ تأیید آخر صفحه: وقتی به دید می‌رسد، یک بار باز می‌شود.
-  const scrim = document.querySelector('.scrim');
-  if (scrim) {
-    if (!('IntersectionObserver' in window)) {
-      scrim.classList.add('is-in');
-    } else {
-      const so = new IntersectionObserver((entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          scrim.classList.add('is-in');
-          so.disconnect();
-        }
-      }, { rootMargin: '0px 0px -40% 0px' }); // وقتی بالای قاب به حدود وسط صفحه رسید
-      so.observe(scrim);
-    }
-  }
-
-  // نوار پیشرفت خدمات: قدم‌ها با اسکرول، به ترتیب و یکی‌یکی جلو می‌روند.
-  // وقتی قدمی شروع می‌شود، قدم قبلی «انجام شد» می‌شود و خط پیشرفت تا قدم تازه پر می‌شود.
-  // اگر چند قدم با هم به دید برسند، صف می‌شوند.
-  const steps = Array.from(document.querySelectorAll<HTMLElement>('.p-step'));
-  const STEP_GAP = 1300; // میلی‌ثانیه بین شروع دو قدم
-  const LINE_FILL = 500; // میلی‌ثانیه: پر شدن خط تا قدم بعد
-
-  if (reduceMotion || !('IntersectionObserver' in window)) {
-    steps.forEach((s) => s.classList.add('is-open', 'is-active', 'is-done'));
-  } else {
-    let opened = -1;
-    let target = -1;
-    let timer = 0;
-    const run = () => {
-      if (timer || opened >= target) return;
-      const prev = steps[opened];
-      opened += 1;
-      const cur = steps[opened];
-      const activate = () => {
-        cur.classList.add('is-open', 'is-active');
-        if (cur.classList.contains('p-final')) cur.classList.add('is-done');
-      };
-      if (prev) {
-        prev.classList.add('is-done');
-        window.setTimeout(activate, LINE_FILL);
-      } else {
-        activate();
-      }
-      timer = window.setTimeout(() => { timer = 0; run(); }, STEP_GAP + (prev ? LINE_FILL : 0));
-    };
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => {
-        if (e.isIntersecting) {
-          target = Math.max(target, steps.indexOf(e.target as HTMLElement));
-          io.unobserve(e.target);
-        }
-      });
-      run();
-    }, { rootMargin: '0px 0px -35% 0px' });
-    steps.forEach((s) => io.observe(s));
-  }
-</script>

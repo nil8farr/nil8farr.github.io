@@ -51,8 +51,6 @@ section { padding: var(--section-space) 0; scroll-margin-top: 24px; }
 .menu-btn, .mobile-booking { display: none; }
 .hero { padding-top: 28px; padding-bottom: 28px; }
 .update { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); overflow: hidden; box-shadow: var(--shadow); }
-.update-bar { padding: 10px 24px; display: flex; justify-content: space-between; border-bottom: 1px solid var(--line); background: #FAFAF8; font-size: 12px; color: var(--muted); }
-.dots { color: #CBCDC5; letter-spacing: 4px; }
 .update-body { display: flex; gap: 24px; padding: 42px 40px 36px; }
 .update-icon { flex: none; display: grid; place-items: center; width: 48px; height: 48px; background: var(--warn-soft); color: var(--warn-text); border-radius: 14px; font: 42px/1 var(--font); }
 .hero-body { flex: 1; }
@@ -60,7 +58,6 @@ h1 { font-size: 40px; font-weight: 800; line-height: 1.8; }
 h1 .l2 { display: block; margin-top: 10px; color: var(--muted); }
 .squiggle { color: var(--ink); text-decoration: underline wavy var(--warn); text-underline-offset: 10px; text-decoration-thickness: 1px; }
 .update-actions { margin-top: 32px; }
-.hero-secondary { display: block; width: fit-content; min-height: 30px; margin-top: 12px; color: var(--accent); font-size: 14px; }
 .intro { display: flex; gap: 20px; max-width: 850px; margin: 28px auto 0; align-items: flex-start; color: var(--muted); }
 .intro img { border-radius: 50%; width: 64px; height: 64px; object-fit: cover; flex: none; }
 .intro p { margin: 0; font-size: 17px; line-height: 2.1; }
@@ -131,14 +128,12 @@ h1 .l2 { display: block; margin-top: 10px; color: var(--muted); }
   .site-nav .btn { display: none; }
   .social-label { position: static; width: auto; height: auto; clip: auto; margin-inline-start: 8px; }
   .hero { padding-top: 16px; padding-bottom: 22px; }
-  .update-bar { padding: 10px 20px; font-size: 11px; }
   .update-body { flex-direction: column; gap: 20px; padding: 24px; }
   .update-icon { width: 42px; height: 42px; font-size: 36px; }
   h1 { font-size: 29px; line-height: 1.9; }
   h1 .l2 { margin-top: 18px; }
   .squiggle { display: block; }
   .update-actions { margin-top: 32px; }
-  .hero-secondary { font-size: 13px; }
   .intro { display: block; margin: 26px 0 0; }
   .intro img { float: right; width: 48px; height: 48px; margin: 7px 0 0 16px; }
   .intro p { font-size: 16px; line-height: 2.1; }

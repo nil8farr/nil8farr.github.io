@@ -17,10 +17,9 @@ while (rest) {
 <Base title={c.seo.title} description={c.seo.description} header={c.header} bookingHref={c.links.booking} linkedinHref={c.links.linkedin} footer={c.footer}>
   <section class="hero" id="hero" aria-labelledby="hero-title"><div class="wrap">
     <div class="update">
-      <div class="update-bar"><span>{c.hero.barLabel} · {c.hero.barContext}</span><span class="dots" aria-hidden="true">•••</span></div>
       <div class="update-body"><span class="update-icon" aria-hidden="true">↻</span><div class="hero-body">
         <h1 id="hero-title">{c.hero.line1}<span class="l2">{c.hero.line2Start}<b class="squiggle">{c.hero.line2End}</b></span></h1>
-        <div class="update-actions"><a class="btn hero-btn" href="#services">{c.hero.button}</a><a class="hero-secondary" href={c.links.booking} {...ext}>{c.hero.secondary}</a></div>
+        <div class="update-actions"><a class="btn hero-btn" href="#services">{c.hero.button}</a></div>
       </div></div>
     </div>
     <div class="intro">{c.hero.photo && <img src={c.hero.photo} alt="" width="64" height="64" />}<p>{introParts.map((p) => p.em ? <strong>{p.text}</strong> : p.text)}</p></div>

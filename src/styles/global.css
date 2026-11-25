@@ -67,7 +67,6 @@ h1 .l2 { display: block; margin-top: 10px; color: var(--muted); }
 .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
 .alerts { margin: 16px 0 0; padding-inline-start: 20px; color: var(--muted); }
 .alerts li { margin-bottom: 12px; }
-.alerts-tag { display: inline-block; margin-inline-start: 8px; padding: 0 10px; border-radius: 999px; background: var(--warn-soft); color: var(--warn-text); font-size: 12.5px; }
 .bridge { padding: 40px 0; background: var(--second-soft); text-align: center; font-size: 26px; }
 .bridge p { margin: 0; }
 .lead { color: var(--muted); margin-bottom: 36px; }

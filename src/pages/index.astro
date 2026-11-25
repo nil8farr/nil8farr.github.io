@@ -34,7 +34,7 @@ while (rest) {
   <section class="problem" aria-labelledby="problem-title"><div class="wrap">
     <h2 id="problem-title">{c.problem.title}</h2><div class="two-col">
       <div>{c.problem.story.map((line: string) => <p>{line}</p>)}</div>
-      <div><p>{c.problem.alertsTitle}<span class="alerts-tag">{c.problem.alertsTag}</span></p><ul class="alerts">{c.problem.symptoms.map((s: string) => <li>{s}</li>)}<li>{c.problem.alertsMore}</li></ul></div>
+      <div><p>{c.problem.alertsTitle}</p><ul class="alerts">{c.problem.symptoms.map((s: string) => <li>{s}</li>)}<li>{c.problem.alertsMore}</li></ul></div>
     </div>
   </div></section>
   <div class="bridge"><div class="wrap"><p>{c.problem.coreStart.split(c.problem.coreStrike)[0]}<span class="core-strike">{c.problem.coreStrike}</span>{c.problem.coreStart.split(c.problem.coreStrike)[1]}<br /><strong>{c.problem.coreEnd.split(c.problem.coreMark)[0]}<mark>{c.problem.coreMark}</mark>{c.problem.coreEnd.split(c.problem.coreMark)[1]}</strong></p></div></div>
